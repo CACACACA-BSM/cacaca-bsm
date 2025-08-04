@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AQHSA SHOFIA - Surat Peringatan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f5f8;
+      }
+      .sidebar {
+        width: 256px;
+        min-width: 256px;
+      }
+      .content {
+        flex-grow: 1;
+      }
+      .card {
+        box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+      }
+      .modal {
+        background-color: rgba(0, 0, 0, 0.5);
+        transition: opacity 0.3s ease;
+      }
+      .modal-content {
+        transform: translateY(-20px);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+      .modal.is-active .modal-content {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .form-section {
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .form-section:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+      .changes-log {
+        max-height: 150px;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <!-- Header -->
+    <header
+      class="bg-white shadow-sm py-4 px-6 flex items-center justify-between lg:justify-start lg:space-x-4 z-10 sticky top-0"
+    >
+      <button
+        id="sidebar-toggle-btn"
+        class="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+      <h1 class="text-2xl font-bold text-gray-800">AQHSA SHOFIA - HRIS</h1>
+      <div class="flex items-center space-x-4 ml-auto">
+        <svg
+          class="h-6 w-6 text-gray-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          ></path>
+        </svg>
+        <div class="relative">
+          <img
+            src="https://placehold.co/40x40/94a3b8/ffffff?text=U"
+            alt="User"
+            class="w-10 h-10 rounded-full cursor-pointer"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="sidebar bg-white p-6 overflow-y-auto border-r border-gray-200 fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20"
+      >
+        <div class="flex items-center space-x-2 mb-8">
+          <span class="text-xl font-bold">ONLY FOR CACA</span>
+        </div>
+        <nav class="space-y-4">
+          <a
+            href="dashboard.html"
+            class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-500 text-white font-semibold"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              ></path>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="employee.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H9a6 6 0 01-6-6v-1a6 6 0 016-6h6a6 6 0 016 6v1a6 6 0 01-6 6z"
+              ></path>
+            </svg>
+            <span>Employee</span>
+          </a>
+          <a
+            href="reporting.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 4h4a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm0 0H7a2 2 0 01-2-2v-6a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            <span>Reporting</span>
+          </a>
+          <a
+            href="leave.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-4 8v.01M12 12v.01M12 16v.01M3 20h18M3 10h18a2 2 0 012 2v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4a2 2 0 012-2z"
+              ></path>
+            </svg>
+            <span>Leave</span>
+          </a>
+          <a
+            href="recruitment.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-2 0h-2m-2 0V3m-2 2h2m0 0h2m-2 0v2m4-2h2m-2 0v2"
+              ></path>
+            </svg>
+            <span>Recruitment Process</span>
+          </a>
+          <a
+            href="generate_letter.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m-6 4h6m-6-4h.01M12 4v4m0 0h.01M12 8h-2m2 0h2m-2 0v-2m-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2m-2 0H9a2 2 0 00-2 2v4a2 2 0 002 2h6a2 2 0 002-2v-4a2 2 0 00-2-2z"
+              ></path>
+            </svg>
+            <span>Generate Letter</span>
+          </a>
+          <a
+            href="surat_peringatan.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6 5h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <span>Surat Peringatan</span>
+          </a>
+          <div class="pt-4 border-t border-gray-200">
+            <a
+              href="settings.html"
+              class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m-6 4H4m-2 4h16a2 2 0 002-2v-4a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2z"
+                ></path>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <div
+        id="sidebar-backdrop"
+        class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"
+      ></div>
+
+      <!-- Main Content Area -->
+      <main class="content p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-2">
+          <h2 id="page-title" class="text-2xl font-bold text-gray-800">
+            Surat Peringatan
+          </h2>
+          <div class="flex space-x-2">
+            <button
+              id="import-btn"
+              class="bg-white text-gray-800 border border-gray-300 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200"
+            >
+              Import CSV
+            </button>
+            <button
+              id="export-btn"
+              class="bg-white text-gray-800 border border-gray-300 py-2 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors duration-200"
+            >
+              Export CSV
+            </button>
+            <button
+              id="add-item-btn"
+              class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-600 flex items-center transition-colors duration-200"
+              onclick="showEditModal('add')"
+            >
+              <svg
+                class="h-5 w-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              Add SP
+            </button>
+          </div>
+        </div>
+        <p id="last-updated-text" class="text-xs text-gray-500 mb-4"></p>
+
+        <!-- Filter Section -->
+        <div
+          class="flex flex-col md:flex-row items-center justify-between mb-4 space-y-2 md:space-y-0 md:space-x-4"
+        >
+          <div class="flex items-center space-x-2 w-full md:w-auto">
+            <span class="text-gray-600">Date:</span>
+            <input
+              type="date"
+              id="date-start-filter"
+              class="border rounded-lg p-2 text-sm w-full md:w-auto"
+            />
+            <input
+              type="date"
+              id="date-end-filter"
+              class="border rounded-lg p-2 text-sm w-full md:w-auto"
+            />
+          </div>
+          <div class="flex items-center space-x-2 w-full md:w-auto">
+            <span class="text-gray-600">Status:</span>
+            <select
+              id="status-filter"
+              class="border rounded-lg p-2 text-sm w-full md:w-auto"
+            >
+              <option value="">All</option>
+              <option value="Aktif">Aktif</option>
+              <option value="Non-aktif">Non-aktif</option>
+            </select>
+          </div>
+          <div class="flex items-center space-x-2 w-full md:w-auto">
+            <span class="text-gray-600">Dept:</span>
+            <select
+              id="dept-filter"
+              class="border rounded-lg p-2 text-sm w-full md:w-auto"
+            >
+              <option value="">All</option>
+            </select>
+          </div>
+          <button
+            id="show-filter-btn"
+            class="bg-indigo-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-indigo-600 transition-colors duration-200 w-full md:w-auto"
+          >
+            Show
+          </button>
+        </div>
+
+        <!-- Content Container -->
+        <div
+          id="table-container"
+          class="bg-white rounded-xl card overflow-hidden"
+        >
+          <div
+            class="p-4 flex flex-col md:flex-row items-center justify-between border-b border-gray-200 space-y-2 md:space-y-0"
+          >
+            <div class="flex items-center space-x-2 w-full md:w-auto">
+              <input
+                id="search-input"
+                type="text"
+                placeholder="Search..."
+                class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full lg:w-64"
+              />
+            </div>
+            <div class="flex items-center space-x-2">
+              <button
+                id="bulk-delete-btn"
+                class="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-600 hidden transition-colors duration-200"
+              >
+                Bulk Delete
+              </button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead id="table-header" class="bg-gray-50">
+                <!-- Header tabel akan diisi oleh JavaScript -->
+              </thead>
+              <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                <!-- Baris tabel akan diisi oleh JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          <div
+            id="pagination"
+            class="p-4 flex items-center justify-between border-t border-gray-200"
+          >
+            <!-- Pagination akan diisi oleh JavaScript -->
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal untuk menampilkan Detail Surat Peringatan -->
+    <div
+      id="sp-modal"
+      class="modal fixed inset-0 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="modal-content bg-white rounded-xl card p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex items-center justify-between border-b pb-4 mb-4">
+          <h3 class="text-xl font-bold text-gray-800">
+            Detail Surat Peringatan
+          </h3>
+          <button
+            id="close-sp-modal-btn"
+            class="text-gray-500 hover:text-gray-800"
+            onclick="closeSpModal()"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <div id="sp-form-container" class="p-4">
+          <!-- Konten formulir SP akan diisi di sini oleh JavaScript -->
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-2">
+          <button
+            id="print-sp-btn"
+            class="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-600 transition-colors duration-200 flex items-center"
+          >
+            <svg
+              class="h-5 w-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2v2H7v-2h2m-2-3h10v2H7v-2zm-3-3h16v2H4v-2zM12 4v16m-4-8h8"
+              ></path>
+            </svg>
+            Print
+          </button>
+          <button
+            id="download-sp-btn"
+            class="bg-green-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-600 transition-colors duration-200 flex items-center"
+          >
+            <svg
+              class="h-5 w-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              ></path>
+            </svg>
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal untuk Tambah/Edit Data Pelanggaran -->
+    <div
+      id="edit-sp-modal"
+      class="modal fixed inset-0 flex items-center justify-center p-4 hidden"
+    >
+      <div
+        class="modal-content bg-white rounded-xl card p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex items-center justify-between border-b pb-4 mb-4">
+          <h3 id="edit-modal-title" class="text-xl font-bold text-gray-800">
+            Edit Data Pelanggaran
+          </h3>
+          <button
+            id="close-edit-modal-btn"
+            class="text-gray-500 hover:text-gray-800"
+            onclick="closeEditModal()"
+          >
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </button>
+        </div>
+
+        <form id="edit-sp-form">
+          <!-- Form fields akan diisi oleh JavaScript -->
+        </form>
+
+        <div class="mt-6 flex justify-end space-x-2">
+          <button
+            id="cancel-edit-btn"
+            class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors duration-200"
+            onclick="closeEditModal()"
+          >
+            Batal
+          </button>
+          <button
+            id="save-sp-btn"
+            class="bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-600 transition-colors duration-200"
+          >
+            Simpan
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast-notification"
+      class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-xl hidden transition-opacity duration-300"
+    ></div>
+
+    <!-- Footer -->
+    <footer
+      class="bg-white py-4 px-6 text-center text-sm text-gray-500 border-t border-gray-200 mt-auto"
+    >
+      DEVELOP BY KAK AFA
+    </footer>
+
+    <script>
+      // PENTING: Ganti URL ini dengan URL Apps Script Anda yang sudah di-deploy.
+      // Pastikan Apps Script Anda di-deploy sebagai "Web app" dengan akses "Anyone".
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbwL0IjiReteHPDgmnKjNdU_vXxcZUERrPByQmcjJpd11NhAVIo0QM3XWuXa2ZyJaiSo/exec";
+
+      let violationData = [];
+      let employeeData = [];
+      let originalItem = {};
+
+      let currentPage = 1;
+      const itemsPerPage = 10;
+      let isLoading = false;
+
+      // DOM elements
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+      const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+      const tableHeader = document.getElementById("table-header");
+      const tableBody = document.getElementById("table-body");
+      const pageTitle = document.getElementById("page-title");
+      const addItemBtn = document.getElementById("add-item-btn");
+      const dataModal = document.getElementById("sp-modal");
+      const closeDataModalBtn = document.getElementById("close-sp-modal-btn");
+      const dataForm = document.getElementById("sp-form-container");
+      const searchInput = document.getElementById("search-input");
+      const exportBtn = document.getElementById("export-btn");
+      const importBtn = document.getElementById("import-btn");
+      const mainContent = document.querySelector("main");
+      const lastUpdatedText = document.getElementById("last-updated-text");
+      const toastNotification = document.getElementById("toast-notification");
+      const printBtn = document.getElementById("print-sp-btn");
+      const downloadBtn = document.getElementById("download-sp-btn");
+
+      const editSPModal = document.getElementById("edit-sp-modal");
+      const closeEditModalBtn = document.getElementById("close-edit-modal-btn");
+      const editModalTitle = document.getElementById("edit-modal-title");
+      const editSpForm = document.getElementById("edit-sp-form");
+      const saveSpBtn = document.getElementById("save-sp-btn");
+      const cancelEditBtn = document.getElementById("cancel-edit-btn");
+
+      // Filter elements
+      const dateStartFilter = document.getElementById("date-start-filter");
+      const dateEndFilter = document.getElementById("date-end-filter");
+      const statusFilter = document.getElementById("status-filter");
+      const deptFilter = document.getElementById("dept-filter");
+      const showFilterBtn = document.getElementById("show-filter-btn");
+
+      const violationHeaders = [
+        { key: "ID DOKUMEN", label: "ID DOKUMEN" },
+        { key: "NRP", label: "NRP" },
+        { key: "NAME", label: "Nama" },
+        { key: "COMPANY", label: "Perusahaan" },
+        { key: "DEPARTMENT", label: "Departemen" },
+        { key: "POSITION", label: "Posisi" },
+        { key: "TANGGAL KEJADIAN", label: "Tanggal Kejadian" },
+        { key: "WAKTU KEJADIAN", label: "Waktu Kejadian" },
+        { key: "SANKSI", label: "Sanksi" },
+        { key: "JENIS", label: "Jenis" },
+        { key: "LOKASI", label: "Lokasi" },
+        { key: "URAIAN", label: "Uraian" },
+        { key: "MINE", label: "Mine" },
+        { key: "PERMIT", label: "Permit" },
+        { key: "SIMPER", label: "Simper" },
+        { key: "MASA GROUNDED", label: "Masa Grounded" },
+        { key: "JADWAL GROUNDED", label: "Jadwal Grounded" },
+        { key: "JADWAL DIRUMAHKAN", label: "Jadwal Dirumahkan" },
+        { key: "STATUS", label: "Status" },
+        { key: "DIBUAT OLEH", label: "Dibuat Oleh" },
+        { key: "PADA TANGGAL", label: "Pada Tanggal" },
+      ];
+
+      const spFormFields = {
+        "Pelanggaran Details": [
+          { key: "ID DOKUMEN", label: "No Dokumen", type: "text" },
+          { key: "NRP", label: "NRP", type: "select" },
+          { key: "NAME", label: "Nama", type: "text" },
+          { key: "COMPANY", label: "Perusahaan", type: "text" },
+          { key: "DEPARTMENT", label: "Departemen", type: "text" },
+          { key: "POSITION", label: "Posisi", type: "text" },
+          { key: "TANGGAL KEJADIAN", label: "Tanggal Kejadian", type: "date" },
+          { key: "WAKTU KEJADIAN", label: "Waktu Kejadian", type: "text" },
+          { key: "SANKSI", label: "Sanksi Pelanggaran", type: "text" },
+          { key: "JENIS", label: "Jenis Pelanggaran", type: "text" },
+          { key: "LOKASI", label: "Lokasi Kejadian", type: "text" },
+          { key: "URAIAN", label: "Uraian", type: "text" },
+          { key: "DIBUAT OLEH", label: "Dibuat Oleh", type: "text" },
+          { key: "PADA TANGGAL", label: "Pada Tanggal", type: "date" },
+        ],
+        "Mine License Penalty": [
+          { key: "MINE", label: "Mine", type: "text" },
+          { key: "PERMIT", label: "Permit", type: "text" },
+          { key: "SIMPER", label: "Simper", type: "text" },
+          { key: "MASA GROUNDED", label: "Masa Grounded", type: "text" },
+          { key: "JADWAL GROUNDED", label: "Jadwal Grounded", type: "text" },
+          {
+            key: "JADWAL DIRUMAHKAN",
+            label: "Jadwal Dirumahkan",
+            type: "text",
+          },
+        ],
+        "Approval Status": [{ key: "STATUS", label: "Status", type: "text" }],
+      };
+
+      function showSidebar() {
+        sidebar.classList.remove("-translate-x-full");
+        sidebar.classList.add("translate-x-0");
+        sidebarBackdrop.classList.remove("hidden");
+      }
+
+      function hideSidebar() {
+        sidebar.classList.remove("translate-x-0");
+        sidebar.classList.add("-translate-x-full");
+        sidebarBackdrop.classList.add("hidden");
+      }
+
+      function showToast(message, duration = 3000) {
+        toastNotification.textContent = message;
+        toastNotification.classList.remove("hidden", "opacity-0");
+        toastNotification.classList.add("opacity-100");
+        setTimeout(() => {
+          toastNotification.classList.remove("opacity-100");
+          toastNotification.classList.add("opacity-0");
+          setTimeout(() => {
+            toastNotification.classList.add("hidden");
+          }, 300);
+        }, duration);
+      }
+
+      function showLoading() {
+        isLoading = true;
+        mainContent.classList.add("opacity-50", "pointer-events-none");
+        lastUpdatedText.textContent = "Memuat data...";
+      }
+
+      function hideLoading() {
+        isLoading = false;
+        mainContent.classList.remove("opacity-50", "pointer-events-none");
+      }
+
+      async function fetchData(sheetName) {
+        showLoading();
+        let data = [];
+        try {
+          const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
+          if (!response.ok) {
+            const errorText = `HTTP error! Status: ${response.status} - ${
+              response.statusText || "Unknown error"
+            }`;
+            console.error("Fetch failed:", errorText);
+            throw new Error(errorText);
+          }
+          data = await response.json();
+
+          if (sheetName === "REPORT_PELANGGARAN") {
+            violationData = data;
+          } else if (sheetName === "DATA_KARYAWAN") {
+            employeeData = data;
+          }
+          lastUpdatedText.textContent = `Terakhir diperbarui: ${new Date().toLocaleString()}`;
+          showToast("Data berhasil diperbarui!", 1500);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          showToast(
+            `Gagal terhubung ke server. Periksa koneksi atau URL Apps Script. Detail: ${error.message}`,
+            5000
+          );
+        } finally {
+          hideLoading();
+        }
+        return data;
+      }
+
+      function populateFilterDropdown(data, filterId, fieldName) {
+        const dropdown = document.getElementById(filterId);
+        const uniqueValues = [
+          ...new Set(
+            data.map((item) => item[fieldName]).filter((value) => value)
+          ),
+        ];
+
+        dropdown.innerHTML = '<option value="">All</option>';
+        uniqueValues.forEach((value) => {
+          const option = document.createElement("option");
+          option.value = value;
+          option.textContent = value;
+          dropdown.appendChild(option);
+        });
+      }
+
+      function renderTable(data, headers, page, searchQuery = "") {
+        tableHeader.innerHTML = "";
+        tableBody.innerHTML = "";
+
+        let headerHtml =
+          '<tr><th class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-xl"><input type="checkbox" class="rounded text-indigo-600"></th>';
+        headers.forEach((header) => {
+          headerHtml += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header.label}</th>`;
+        });
+        headerHtml += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-xl">Actions</th></tr>`;
+        tableHeader.innerHTML = headerHtml;
+
+        const filteredData = data.filter((item) => {
+          const matchesSearch = Object.values(item).some((value) =>
+            String(value).toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          const matchesDept =
+            !deptFilter.value || item["DEPARTMENT"] === deptFilter.value; // Changed to DEPARTMENT
+          const matchesStatus =
+            !statusFilter.value || item["STATUS"] === statusFilter.value;
+
+          return matchesSearch && matchesDept && matchesStatus;
+        });
+
+        const startIndex = (page - 1) * itemsPerPage;
+        const paginatedData = filteredData.slice(
+          startIndex,
+          startIndex + itemsPerPage
+        );
+
+        if (paginatedData.length === 0) {
+          tableBody.innerHTML = `<tr><td colspan="${
+            headers.length + 2
+          }" class="text-center py-8 text-gray-500">Tidak ada data ditemukan.</td></tr>`;
+        } else {
+          paginatedData.forEach((item) => {
+            let rowHtml = `<tr class="hover:bg-gray-100 cursor-pointer transition-colors duration-200" data-id="${item.id}">`;
+            rowHtml += `<td class="p-4 whitespace-nowrap"><input type="checkbox" class="rounded text-indigo-600 focus:ring-indigo-500"></td>`;
+
+            headers.forEach((header) => {
+              let cellValue = item[header.key] || "-";
+              if (header.key === "STATUS") {
+                let statusColor = "bg-gray-200 text-gray-800";
+                if (cellValue === "Aktif") {
+                  statusColor = "bg-green-100 text-green-800";
+                } else if (cellValue === "Non-aktif") {
+                  statusColor = "bg-red-100 text-red-800";
+                }
+                cellValue = `<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColor}">${cellValue}</span>`;
+              } else if (
+                header.key.includes("WAKTU") ||
+                header.key.includes("TANGGAL") ||
+                header.key.includes("PADA TANGGAL")
+              ) {
+                if (cellValue !== "-") {
+                  const date = new Date(cellValue);
+                  cellValue = date.toLocaleString("id-ID", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+                }
+              }
+              rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${cellValue}</td>`;
+            });
+
+            rowHtml += `<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button class="text-indigo-600 hover:text-indigo-900 mx-1 transition-colors duration-200" onclick="event.stopPropagation(); showEditModal('edit', ${item.id})">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-900 mx-1 transition-colors duration-200" onclick="event.stopPropagation(); deleteItem(${item.id})">
+                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </td>`;
+            rowHtml += `</tr>`;
+            tableBody.innerHTML += rowHtml;
+          });
+        }
+
+        tableBody.querySelectorAll("tr").forEach((row) => {
+          row.addEventListener("click", () => {
+            const itemId = parseInt(row.dataset.id);
+            showSpModal(itemId);
+          });
+        });
+
+        renderPagination(filteredData.length);
+      }
+
+      function renderPagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const paginationContainer = document.getElementById("pagination");
+        paginationContainer.innerHTML = "";
+
+        if (totalItems > 0) {
+          let paginationHtml = `<span class="text-sm text-gray-500">${totalItems} records</span>
+                                        <div class="flex items-center space-x-2">`;
+
+          paginationHtml += `<button onclick="changePage(${
+            currentPage - 1
+          })" class="bg-gray-200 text-gray-600 px-3 py-1 rounded-lg text-sm hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" ${
+            currentPage === 1 ? "disabled" : ""
+          }><</button>`;
+
+          for (let i = 1; i <= totalPages; i++) {
+            paginationHtml += `<button onclick="changePage(${i})" class="px-3 py-1 rounded-lg text-sm transition-colors duration-200 ${
+              currentPage === i
+                ? "bg-indigo-500 text-white"
+                : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+            }">${i}</button>`;
+          }
+
+          paginationHtml += `<button onclick="changePage(${
+            currentPage + 1
+          })" class="bg-gray-200 text-gray-600 px-3 py-1 rounded-lg text-sm hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" ${
+            currentPage === totalPages ? "disabled" : ""
+          }>></button>`;
+
+          paginationHtml += `</div>`;
+          paginationContainer.innerHTML = paginationHtml;
+        }
+      }
+
+      function changePage(page) {
+        if (
+          page > 0 &&
+          page <= Math.ceil(violationData.length / itemsPerPage)
+        ) {
+          currentPage = page;
+          render();
+        }
+      }
+
+      async function showSpModal(id) {
+        const item = violationData.find((e) => e.id === id);
+        if (!item) {
+          showToast("Data tidak ditemukan.", 3000);
+          return;
+        }
+
+        const formatData = (value) => {
+          return value || "-";
+        };
+
+        const formHtml = `
+                <div id="sp-form-content" class="text-gray-800">
+                    <p class="font-bold text-lg mb-4">${formatData(
+                      item["ID DOKUMEN"]
+                    )}</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-2 text-sm mb-6">
+                        <div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">NRP / Nama</div>: ${formatData(
+                              item["NRP"]
+                            )} / ${formatData(item["NAME"])}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Perusahaan</div>: ${formatData(
+                              item["COMPANY"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Departemen / Posisi</div>: ${formatData(
+                              item["DEPARTMENT"]
+                            )} / ${formatData(item["POSITION"])}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Tanggal Kejadian</div>: ${formatData(
+                              item["TANGGAL KEJADIAN"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Waktu Kejadian</div>: ${formatData(
+                              item["WAKTU KEJADIAN"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Sanksi Pelanggaran</div>: ${formatData(
+                              item["SANKSI"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Jenis Pelanggaran</div>: ${formatData(
+                              item["JENIS"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Lokasi Kejadian</div>: ${formatData(
+                              item["LOKASI"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32 font-medium">Uraian</div>: ${formatData(
+                              item["URAIAN"]
+                            )}</div>
+                        </div>
+                        
+                        <!-- Mine License Penalty Section -->
+                        <div>
+                            <h4 class="font-bold mb-2 mt-4 md:mt-0">Mine License Penalty</h4>
+                            <div class="flex mb-1"><div class="w-32">Mine</div>: ${formatData(
+                              item["MINE"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32">Permit</div>: ${formatData(
+                              item["PERMIT"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32">Simper</div>: ${formatData(
+                              item["SIMPER"]
+                            )}</div>
+                            <h4 class="font-bold mb-2 mt-4">Grounded</h4>
+                            <div class="flex mb-1"><div class="w-32">Masa Grounded</div>: ${formatData(
+                              item["MASA GROUNDED"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32">Jadwal Grounded</div>: ${formatData(
+                              item["JADWAL GROUNDED"]
+                            )}</div>
+                            <div class="flex mb-1"><div class="w-32">Jadwal Dirumahkan</div>: ${formatData(
+                              item["JADWAL DIRUMAHKAN"]
+                            )}</div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 mt-6 pt-6 text-sm">
+                        <div class="flex mb-1"><div class="w-32 font-medium">Dibuat Oleh</div>: ${formatData(
+                          item["DIBUAT OLEH"]
+                        )}</div>
+                        <div class="flex mb-1"><div class="w-32 font-medium">Pada tanggal</div>: ${formatData(
+                          item["PADA TANGGAL"]
+                        )}</div>
+                    </div>
+
+                    <div class="border-t border-gray-200 mt-6 pt-6 text-sm">
+                        <h4 class="font-bold mb-2">Riwayat Pelanggaran:</h4>
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sanksi</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Data riwayat pelanggaran akan diisi di sini -->
+                                <tr><td colspan="5" class="text-center py-2">No data available in table</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+        dataForm.innerHTML = formHtml;
+        dataModal.classList.add("is-active");
+        dataModal.classList.remove("hidden");
+      }
+
+      function closeSpModal() {
+        dataModal.classList.remove("is-active");
+        dataModal.classList.add("hidden");
+      }
+
+      function showEditModal(mode, id = null) {
+        editSpForm.innerHTML = "";
+        let data;
+        if (mode === "edit") {
+          data = violationData.find((e) => e.id === id);
+          if (data) {
+            originalItem = { ...data };
+            editModalTitle.textContent = `Edit Data Pelanggaran ID: ${data["ID DOKUMEN"]}`;
+          }
+        } else {
+          editModalTitle.textContent = "Tambah Data Pelanggaran Baru";
+          data = {};
+        }
+
+        let formHtml = "";
+        for (const section in spFormFields) {
+          formHtml += `<div class="form-section">`;
+          formHtml += `<h4 class="text-lg font-semibold text-gray-800 mb-4">${section}</h4>`;
+          formHtml += `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+          spFormFields[section].forEach((field) => {
+            const value = data ? data[field.key] || "" : "";
+            let inputHtml;
+
+            if (field.key === "NRP") {
+              // Bagian ini sekarang menggunakan dropdown untuk NRP, yang diisi dari data karyawan
+              // NRP yang dipilih akan mengisi field nama, perusahaan, departemen dan posisi secara otomatis
+              const options = employeeData
+                .map(
+                  (emp) =>
+                    `<option value="${emp["NRP"]}">${emp["NRP"]} - ${emp["NAME"]}</option>`
+                )
+                .join(""); // Changed emp['NAMA'] to emp['NAME']
+              inputHtml = `
+                            <select name="${field.key}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-gray-50">
+                               <option value="">Pilih Karyawan</option>
+                               ${options}
+                            </select>
+                         `;
+            } else {
+              inputHtml = `<input type="${field.type}" name="${field.key}" value="${value}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-gray-50" required>`;
+            }
+
+            formHtml += `
+                        <div class="flex flex-col">
+                            <label class="text-sm font-medium text-gray-700">${field.label}</label>
+                            ${inputHtml}
+                        </div>
+                    `;
+          });
+          formHtml += `</div></div>`;
+        }
+
+        editSpForm.innerHTML = formHtml;
+        saveSpBtn.dataset.mode = mode;
+        saveSpBtn.dataset.id = id;
+
+        // Ini adalah kode yang mendengarkan perubahan pada dropdown NRP
+        // dan secara otomatis mengisi field lainnya.
+        const nrpSelect = editSpForm.querySelector('select[name="NRP"]');
+        if (nrpSelect) {
+          nrpSelect.addEventListener("change", (e) => {
+            const selectedNrp = e.target.value;
+            const selectedEmployee = employeeData.find(
+              (emp) => emp["NRP"] === selectedNrp
+            );
+            if (selectedEmployee) {
+              // Mencari elemen input yang sesuai dan mengisinya
+              const namaInput = editSpForm.querySelector('input[name="NAME"]');
+              if (namaInput) namaInput.value = selectedEmployee["NAME"] || ""; // Changed selectedEmployee['NAMA'] to selectedEmployee['NAME']
+
+              const perusahaanInput = editSpForm.querySelector(
+                'input[name="COMPANY"]'
+              );
+              if (perusahaanInput)
+                perusahaanInput.value = selectedEmployee["COMPANY"] || ""; // Changed selectedEmployee['PERUSAHAAN'] to selectedEmployee['COMPANY']
+
+              const deptInput = editSpForm.querySelector(
+                'input[name="DEPARTMENT"]'
+              );
+              if (deptInput)
+                deptInput.value = selectedEmployee["DEPARTMENT"] || ""; // Changed selectedEmployee['DEPT'] to selectedEmployee['DEPARTMENT']
+
+              const posisiInput = editSpForm.querySelector(
+                'input[name="POSITION"]'
+              );
+              if (posisiInput)
+                posisiInput.value = selectedEmployee["POSITION"] || ""; // Changed selectedEmployee['POSISI'] to selectedEmployee['POSITION']
+            }
+          });
+          // Set nilai awal jika dalam mode edit
+          if (data && data["NRP"]) {
+            nrpSelect.value = data["NRP"];
+            // Panggil event change secara manual untuk mengisi field lain jika data sudah ada
+            const event = new Event("change");
+            nrpSelect.dispatchEvent(event);
+          }
+        }
+
+        editSPModal.classList.add("is-active");
+        editSPModal.classList.remove("hidden");
+      }
+
+      function closeEditModal() {
+        editSPModal.classList.remove("is-active");
+        editSPModal.classList.add("hidden");
+        editSpForm.reset();
+      }
+
+      async function deleteItem(id) {
+        if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+          showLoading();
+          const sheetName = "REPORT_PELANGGARAN";
+          try {
+            const response = await fetch(SCRIPT_URL, {
+              method: "POST",
+              body: JSON.stringify({
+                action: "delete",
+                sheet: sheetName,
+                id: id,
+              }),
+              headers: { "Content-Type": "application/json" },
+            });
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const result = await response.json();
+            if (result && result.status === "success") {
+              showToast("Data berhasil dihapus!");
+              await render();
+            } else {
+              showToast("Gagal menghapus data.");
+            }
+          } catch (error) {
+            console.error("Error deleting data:", error);
+            showToast("Gagal menghapus data.");
+            hideLoading();
+          }
+        }
+      }
+
+      async function saveSpForm(event) {
+        event.preventDefault();
+
+        const formData = new FormData(editSpForm);
+        const newItem = {};
+        for (let [key, value] of formData.entries()) {
+          newItem[key] = value;
+        }
+
+        const mode = saveSpBtn.dataset.mode;
+        // ID yang digunakan sekarang adalah ID dari Apps Script, bukan indeks array
+        const id = parseInt(saveSpBtn.dataset.id);
+        const sheetName = "REPORT_PELANGGARAN";
+
+        showLoading();
+        try {
+          const payload = {
+            action: mode,
+            sheet: sheetName,
+            id: mode === "edit" ? id : null,
+            data: newItem,
+          };
+          const response = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "application/json" },
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const result = await response.json();
+          if (result && result.status === "success") {
+            closeEditModal();
+            showToast(
+              `Data berhasil di${mode === "add" ? "tambah" : "perbarui"}!`
+            );
+            render();
+          } else {
+            showToast("Gagal menyimpan data.");
+          }
+        } catch (error) {
+          console.error("Error saving data:", error);
+          showToast("Gagal menyimpan data.");
+          hideLoading();
+        }
+      }
+
+      async function render() {
+        pageTitle.textContent = "Surat Peringatan";
+        addItemBtn.textContent = "Add SP";
+        // Fetch data for both sheets
+        await Promise.all([
+          fetchData("REPORT_PELANGGARAN"),
+          fetchData("DATA_KARYAWAN"),
+        ]);
+
+        populateFilterDropdown(violationData, "dept-filter", "DEPARTMENT"); // Changed to DEPARTMENT
+
+        renderTable(
+          violationData,
+          violationHeaders,
+          currentPage,
+          searchInput.value
+        );
+      }
+
+      function exportToCsv() {
+        const dataToExport = violationData;
+        if (dataToExport.length === 0) {
+          alert("Tidak ada data untuk diekspor.");
+          return;
+        }
+        const headers = Object.keys(dataToExport[0] || {});
+        const csv = [
+          headers.join(","),
+          ...dataToExport.map((row) =>
+            headers
+              .map(
+                (header) =>
+                  `"${(row[header] || "").toString().replace(/"/g, '""')}"`
+              )
+              .join(",")
+          ),
+        ].join("\n");
+
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `report_pelanggaran_data.csv`;
+        link.click();
+      }
+
+      function importData() {
+        alert(
+          "Fungsi impor adalah placeholder. Dalam aplikasi nyata, Anda akan menangani unggahan file dan parsing data di sini."
+        );
+      }
+
+      sidebarToggleBtn.addEventListener("click", showSidebar);
+      sidebarBackdrop.addEventListener("click", hideSidebar);
+
+      // Event listeners for buttons
+      addItemBtn.addEventListener("click", () => showEditModal("add"));
+      closeDataModalBtn.addEventListener("click", () => closeSpModal());
+      closeEditModalBtn.addEventListener("click", () => closeEditModal());
+      cancelEditBtn.addEventListener("click", () => closeEditModal());
+      saveSpBtn.addEventListener("click", saveSpForm); // Mengubah dari 'submit' ke 'click' untuk tombol
+
+      searchInput.addEventListener("input", () => {
+        currentPage = 1;
+        renderTable(
+          violationData,
+          violationHeaders,
+          currentPage,
+          searchInput.value
+        );
+      });
+      exportBtn.addEventListener("click", exportToCsv);
+      importBtn.addEventListener("click", importData);
+
+      printBtn.addEventListener("click", () => window.print());
+      downloadBtn.addEventListener("click", () => {
+        const element = document.getElementById("sp-form-content");
+        html2pdf(element, {
+          margin: 1,
+          filename: `SuratPeringatan_${new Date().toISOString()}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        });
+      });
+
+      showFilterBtn.addEventListener("click", () => {
+        currentPage = 1;
+        renderTable(
+          violationData,
+          violationHeaders,
+          currentPage,
+          searchInput.value
+        );
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        render();
+      });
+    </script>
+  </body>
+</html>
