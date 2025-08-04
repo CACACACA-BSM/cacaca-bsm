@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AQHSA SHOFIA - Rekrutmen</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Base styles for the body and font */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f5f8;
+      }
+      /* Sidebar width configuration */
+      .sidebar {
+        width: 256px;
+        min-width: 256px;
+      }
+      /* Main content area to take remaining space */
+      .content {
+        flex-grow: 1;
+      }
+      /* Card styling for consistent UI elements */
+      .card {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-radius: 12px;
+      }
+      /* Styling for tab navigation buttons */
+      .tab-button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+        cursor: pointer;
+      }
+      /* Active tab button styling */
+      .tab-button.active {
+        background-color: #4f46e5; /* indigo-600 */
+        color: white;
+      }
+      /* Hover effect for inactive tab buttons */
+      .tab-button:not(.active):hover {
+        background-color: #e0e7ff; /* indigo-100 */
+        color: #4338ca; /* indigo-700 */
+      }
+      /* Container for tables with scrollability */
+      .table-container {
+        max-height: 700px; /* Adjusted for more vertical space */
+        overflow-y: auto;
+      }
+      /* Sticky header for tables when scrolling */
+      .sticky-header th {
+        position: sticky;
+        top: 0;
+        background-color: #f9fafb; /* bg-gray-50 */
+        z-index: 10;
+      }
+    </style>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    <!-- Header Section -->
+    <header
+      class="bg-white shadow-sm py-4 px-6 flex items-center justify-between lg:justify-start lg:space-x-4 z-10 sticky top-0"
+    >
+      <!-- Sidebar toggle button for mobile views -->
+      <button
+        id="sidebar-toggle-btn"
+        class="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <svg
+          class="h-6 w-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          ></path>
+        </svg>
+      </button>
+      <!-- Main title of the HRIS system -->
+      <h1 class="text-2xl font-bold text-gray-800">AQHSA SHOFIA - HRIS</h1>
+      <!-- User profile and notification icons -->
+      <div class="flex items-center space-x-4 ml-auto">
+        <svg
+          class="h-6 w-6 text-gray-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+          ></path>
+        </svg>
+        <div class="relative">
+          <img
+            src="https://placehold.co/40x40/94a3b8/ffffff?text=U"
+            alt="User"
+            class="w-10 h-10 rounded-full cursor-pointer"
+          />
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area with Sidebar -->
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Sidebar Navigation -->
+      <aside
+        id="sidebar"
+        class="sidebar bg-white p-6 overflow-y-auto border-r border-gray-200 fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20"
+      >
+        <div class="flex items-center space-x-2 mb-8">
+          <span class="text-xl font-bold">HRUSELINK</span>
+        </div>
+        <nav class="space-y-4">
+          <!-- Sidebar links for different HRIS modules -->
+          <a
+            href="dashboard.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 2 0 011 1v4a1 1 0 001 1m-6 0h6"
+              ></path>
+            </svg>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="employee.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H9a6 6 0 01-6-6v-1a6 6 0 016-6h6a6 6 0 016 6v1a6 6 0 01-6 6z"
+              ></path>
+            </svg>
+            <span>Employee</span>
+          </a>
+          <a
+            href="reporting.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 4h4a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm0 0H7a2 2 0 01-2-2v-6a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2z"
+              ></path>
+            </svg>
+            <span>Reporting</span>
+          </a>
+          <a
+            href="leave.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-4 8v.01M12 12v.01M12 16v.01M3 20h18M3 10h18a2 2 0 012 2v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4a2 2 0 012-2z"
+              ></path>
+            </svg>
+            <span>Leave</span>
+          </a>
+          <!-- Active link for Recruitment Process -->
+          <a
+            href="recruitment.html"
+            class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-500 text-white font-semibold"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-2 0h-2m-2 0V3m-2 2h2m0 0h2m-2 0v2m4-2h2m-2 0v2"
+              ></path>
+            </svg>
+            <span>Recruitment Process</span>
+          </a>
+          <a
+            href="generate_letter.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m-6 4h6m-6-4h.01M12 4v4m0 0h.01M12 8h-2m2 0h2m-2 0v-2m-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2m-2 0H9a2 2 0 00-2 2v4a2 2 0 002 2h6a2 2 0 002-2v-4a2 2 0 00-2-2z"
+              ></path>
+            </svg>
+            <span>Generate Letter</span>
+          </a>
+          <a
+            href="surat_peringatan.html"
+            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6 5h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <span>Surat Peringatan</span>
+          </a>
+          <div class="pt-4 border-t border-gray-200">
+            <a
+              href="settings.html"
+              class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
+            >
+              <svg
+                class="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m-6 4H4m-2 4h16a2 2 0 002-2v-4a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2z"
+                ></path>
+              </svg>
+              <span>Settings</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Sidebar backdrop for mobile overlay -->
+      <div
+        id="sidebar-backdrop"
+        class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"
+      ></div>
+
+      <!-- Main Content Area -->
+      <main class="content p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-2">
+          <h2 id="page-title" class="text-2xl font-bold text-gray-800">
+            Rekrutmen
+          </h2>
+        </div>
+        <p id="last-updated-text" class="text-xs text-gray-500 mb-4"></p>
+
+        <!-- Tab Navigation for Recruitment Sections -->
+        <div class="flex space-x-4 mb-6 border-b border-gray-200">
+          <button
+            id="tab-pelamar"
+            class="tab-button active"
+            onclick="showTab('pelamar')"
+          >
+            Data Masuk Pelamar
+          </button>
+          <button id="tab-ptk" class="tab-button" onclick="showTab('ptk')">
+            PTK
+          </button>
+          <button id="tab-loker" class="tab-button" onclick="showTab('loker')">
+            UPDATE LOKER
+          </button>
+          <button
+            id="tab-screening"
+            class="tab-button"
+            onclick="showTab('screening')"
+          >
+            SCREENING KANDIDAT
+          </button>
+          <button
+            id="tab-process"
+            class="tab-button"
+            onclick="showTab('process')"
+          >
+            PROCESS KANDIDAT
+          </button>
+        </div>
+
+        <!-- Loading Indicator for data fetching -->
+        <div
+          id="loading-indicator"
+          class="text-center py-8 text-gray-500 hidden"
+        >
+          Memuat data...
+        </div>
+
+        <!-- Content for Data Masuk Pelamar Tab (Incoming Data) -->
+        <div id="pelamar-content" class="tab-content">
+          <div class="bg-white p-6 rounded-xl card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                Data Masuk Pelamar
+              </h3>
+              <button
+                onclick="refreshTab('pelamar')"
+                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition-colors duration-200"
+              >
+                Refresh
+              </button>
+            </div>
+            <!-- Candidate Filtering for Pelamar -->
+            <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  for="filter-pelamar-posisi"
+                  class="block text-sm font-medium text-gray-700"
+                  >Posisi Dilamar</label
+                >
+                <input
+                  type="text"
+                  id="filter-pelamar-posisi"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('pelamar')"
+                />
+              </div>
+              <div>
+                <label
+                  for="filter-pelamar-status"
+                  class="block text-sm font-medium text-gray-700"
+                  >Status</label
+                >
+                <input
+                  type="text"
+                  id="filter-pelamar-status"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('pelamar')"
+                />
+              </div>
+              <div>
+                <label
+                  for="filter-pelamar-nik"
+                  class="block text-sm font-medium text-gray-700"
+                  >NIK</label
+                >
+                <input
+                  type="text"
+                  id="filter-pelamar-nik"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('pelamar')"
+                />
+              </div>
+            </div>
+            <div id="pelamar-data-table" class="table-container"></div>
+          </div>
+        </div>
+
+        <!-- Content for PTK Tab (Manpower Request) -->
+        <div id="ptk-content" class="tab-content hidden">
+          <div class="bg-white p-6 rounded-xl card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                PTK (Permintaan Tenaga Kerja)
+              </h3>
+              <button
+                onclick="refreshTab('ptk')"
+                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition-colors duration-200"
+              >
+                Refresh
+              </button>
+            </div>
+            <div id="ptk-data-table" class="table-container"></div>
+          </div>
+        </div>
+
+        <!-- Content for UPDATE LOKER Tab (Job Posting/Update) -->
+        <div id="loker-content" class="tab-content hidden">
+          <div class="bg-white p-6 rounded-xl card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                Update Loker (Job Posting)
+              </h3>
+              <button
+                onclick="refreshTab('loker')"
+                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition-colors duration-200"
+              >
+                Refresh
+              </button>
+            </div>
+            <!-- Job Posting/Update Form -->
+            <form id="loker-form" class="space-y-4 mb-8">
+              <div>
+                <label
+                  for="loker-id"
+                  class="block text-sm font-medium text-gray-700"
+                  >ID Lowongan</label
+                >
+                <input
+                  type="text"
+                  id="loker-id"
+                  name="ID Loker"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  placeholder="Otomatis jika baru"
+                />
+              </div>
+              <div>
+                <label
+                  for="loker-posisi"
+                  class="block text-sm font-medium text-gray-700"
+                  >Posisi</label
+                >
+                <input
+                  type="text"
+                  id="loker-posisi"
+                  name="Posisi"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                />
+              </div>
+              <div>
+                <label
+                  for="loker-departemen"
+                  class="block text-sm font-medium text-gray-700"
+                  >Departemen</label
+                >
+                <input
+                  type="text"
+                  id="loker-departemen"
+                  name="Departemen"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                />
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label
+                    for="loker-tgl-buka"
+                    class="block text-sm font-medium text-gray-700"
+                    >Tanggal Publikasi</label
+                  >
+                  <input
+                    type="date"
+                    id="loker-tgl-buka"
+                    name="Tanggal Buka"
+                    required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="loker-tgl-tutup"
+                    class="block text-sm font-medium text-gray-700"
+                    >Tanggal Penutupan</label
+                  >
+                  <input
+                    type="date"
+                    id="loker-tgl-tutup"
+                    name="Tanggal Tutup"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  />
+                </div>
+              </div>
+              <div>
+                <label
+                  for="loker-status"
+                  class="block text-sm font-medium text-gray-700"
+                  >Status Lowongan</label
+                >
+                <select
+                  id="loker-status"
+                  name="Status"
+                  required
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                >
+                  <option value="Aktif">Aktif</option>
+                  <option value="Ditutup">Ditutup</option>
+                  <option value="Ditunda">Ditunda</option>
+                  <option value="Penuh">Penuh</option>
+                </select>
+              </div>
+              <div class="flex justify-end space-x-2">
+                <button
+                  type="reset"
+                  class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors duration-200"
+                >
+                  Reset Form
+                </button>
+                <button
+                  type="submit"
+                  class="bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-600 transition-colors duration-200"
+                >
+                  Simpan Lowongan
+                </button>
+              </div>
+            </form>
+            <div id="loker-data-table" class="table-container"></div>
+          </div>
+        </div>
+
+        <!-- Content for SCREENING KANDIDAT Tab (Candidate Screening) -->
+        <div id="screening-content" class="tab-content hidden">
+          <div class="bg-white p-6 rounded-xl card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                Screening Kandidat
+              </h3>
+              <button
+                onclick="refreshTab('screening')"
+                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition-colors duration-200"
+              >
+                Refresh
+              </button>
+            </div>
+            <!-- Candidate Filtering for Screening -->
+            <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label
+                  for="filter-screening-posisi"
+                  class="block text-sm font-medium text-gray-700"
+                  >Posisi Dilamar</label
+                >
+                <input
+                  type="text"
+                  id="filter-screening-posisi"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('screening')"
+                />
+              </div>
+              <div>
+                <label
+                  for="filter-screening-status"
+                  class="block text-sm font-medium text-gray-700"
+                  >Status</label
+                >
+                <input
+                  type="text"
+                  id="filter-screening-status"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('screening')"
+                />
+              </div>
+              <div>
+                <label
+                  for="filter-screening-nik"
+                  class="block text-sm font-medium text-gray-700"
+                  >NIK</label
+                >
+                <input
+                  type="text"
+                  id="filter-screening-nik"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
+                  onkeyup="applyFilter('screening')"
+                />
+              </div>
+            </div>
+            <div class="flex justify-end mb-4 space-x-2">
+              <button
+                id="save-screening-btn"
+                class="bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-600 transition-colors duration-200"
+              >
+                Simpan Pilihan
+              </button>
+              <button
+                id="clear-screening-btn"
+                class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-400 transition-colors duration-200"
+              >
+                Bersihkan Pilihan
+              </button>
+            </div>
+            <div id="screening-data-table" class="table-container"></div>
+          </div>
+        </div>
+
+        <!-- Content for PROCESS KANDIDAT Tab -->
+        <div id="process-content" class="tab-content hidden">
+          <div class="bg-white p-6 rounded-xl card">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">
+                Process Kandidat
+              </h3>
+              <button
+                onclick="refreshTab('process')"
+                class="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm hover:bg-gray-300 transition-colors duration-200"
+              >
+                Refresh
+              </button>
+            </div>
+            <div id="process-data-table" class="table-container"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Notification for user feedback -->
+    <div
+      id="toast-notification"
+      class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-xl hidden transition-opacity duration-300"
+    ></div>
+
+    <!-- Footer Section -->
+    <footer
+      class="bg-white py-4 px-6 text-center text-sm text-gray-500 border-t border-gray-200 mt-auto"
+    >
+      DEVELOP BY KAK AFA
+    </footer>
+
+    <script>
+      // IMPORTANT: Replace this URL with your deployed Google Apps Script URL.
+      // Ensure your Apps Script is deployed as a "Web app" with "Anyone".
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbw-EBWmShJdYK4R06Wpa91-KP4wevX6Hz6wXcZLJr6zYOJwZlhRx3dp5kODaNYBYRFD/exec";
+
+      let activeTab = "pelamar"; // Default active tab
+      let dataCache = {}; // Cache for fetched data from different sheets
+      let selectedCandidates = []; // Temporary cache for selected candidates in Screening tab
+
+      // DOM elements for easier access
+      const sidebar = document.getElementById("sidebar");
+      const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
+      const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+      const lastUpdatedText = document.getElementById("last-updated-text");
+      const toastNotification = document.getElementById("toast-notification");
+      const loadingIndicator = document.getElementById("loading-indicator");
+      const mainContent = document.querySelector("main");
+
+      // Tab button elements
+      const tabPelamarBtn = document.getElementById("tab-pelamar");
+      const tabPtkBtn = document.getElementById("tab-ptk");
+      const tabLokerBtn = document.getElementById("tab-loker");
+      const tabScreeningBtn = document.getElementById("tab-screening");
+      const tabProcessBtn = document.getElementById("tab-process");
+
+      // Tab content elements
+      const pelamarContent = document.getElementById("pelamar-content");
+      const ptkContent = document.getElementById("ptk-content");
+      const lokerContent = document.getElementById("loker-content");
+      const screeningContent = document.getElementById("screening-content");
+      const processContent = document.getElementById("process-content");
+
+      // Screening specific buttons
+      const saveScreeningBtn = document.getElementById("save-screening-btn");
+      const clearScreeningBtn = document.getElementById("clear-screening-btn");
+
+      // Job Posting form elements
+      const lokerForm = document.getElementById("loker-form");
+      const lokerIdInput = document.getElementById("loker-id");
+      const lokerPosisiInput = document.getElementById("loker-posisi");
+      const lokerDepartemenInput = document.getElementById("loker-departemen");
+      const lokerTglBukaInput = document.getElementById("loker-tgl-buka");
+      const lokerTglTutupInput = document.getElementById("loker-tgl-tutup");
+      const lokerStatusSelect = document.getElementById("loker-status");
+
+      // Mapping tab names to Google Sheet names
+      const sheetMapping = {
+        pelamar: "1.DATA_SHOW_WEB", // Updated from DATA_PROCESS
+        ptk: "1. PTK",
+        loker: "2. UPDATE_LOKER",
+        screening: "1.DATA_SHOW_WEB", // Updated from DATA_PROCESS
+        process: "4. PROCESS KANDIDAT",
+      };
+
+      // Define headers for each table. 'isId: true' marks the primary identifier for each sheet.
+      const headersConfig = {
+        "1.DATA_SHOW_WEB": [
+          // Updated from DATA_PROCESS
+          { key: "ID", label: "NIK", isId: true }, // 'ID' column in sheet is now labeled 'NIK'
+          { key: "Nama", label: "Nama" },
+          { key: "Email", label: "Email" },
+          { key: "Telepon", label: "Telepon" },
+          { key: "Posisi Dilamar", label: "Posisi Dilamar" },
+          { key: "Tanggal Lamaran", label: "Tanggal Lamaran" },
+          { key: "Status", label: "Status" },
+        ],
+        "1. PTK": [
+          { key: "ID PTK", label: "ID PTK", isId: true },
+          { key: "Posisi", label: "Posisi" },
+          { key: "Departemen", label: "Departemen" },
+          { key: "Jumlah", label: "Jumlah" },
+          { key: "Tanggal Dibutuhkan", label: "Tgl Dibutuhkan" },
+          { key: "Status", label: "Status" },
+        ],
+        "2. UPDATE_LOKER": [
+          { key: "ID Loker", label: "ID Loker", isId: true },
+          { key: "Posisi", label: "Posisi" },
+          { key: "Departemen", label: "Departemen" },
+          { key: "Tanggal Buka", label: "Tgl Buka" },
+          { key: "Tanggal Tutup", label: "Tgl Tutup" },
+          { key: "Status", label: "Status" },
+        ],
+        "3. SCREENING KANDIDAT": [
+          // Uses 1.DATA_SHOW_WEB headers + checkbox
+          { key: "ID", label: "NIK", isId: true }, // 'ID' column in sheet is now labeled 'NIK'
+          { key: "Nama", label: "Nama" },
+          { key: "Posisi Dilamar", label: "Posisi Dilamar" },
+          { key: "Tanggal Lamaran", label: "Tanggal Lamaran" },
+          { key: "Status", label: "Status" },
+        ],
+        "5.PILIHAN_CACA": [
+          // Target sheet for screened candidates
+          { key: "ID", label: "NIK Pelamar", isId: true }, // Consistent 'NIK' label for saved candidates
+          { key: "Nama", label: "Nama Pelamar" },
+          { key: "Posisi Dilamar", label: "Posisi Dilamar" },
+          { key: "Status Screening", label: "Status Screening" },
+          { key: "Tanggal Screening", label: "Tanggal Screening" },
+        ],
+        "4. PROCESS KANDIDAT": [
+          { key: "ID", label: "ID Kandidat", isId: true },
+          { key: "Nama", label: "Nama Kandidat" },
+          { key: "Posisi Dilamar", label: "Posisi Dilamar" },
+          { key: "Tahap Proses", label: "Tahap Proses" },
+          { key: "Tanggal Update", label: "Tanggal Update" },
+        ],
+      };
+
+      /**
+       * Determines the primary ID key for a given sheet based on headersConfig.
+       * @param {string} sheetName - The name of the sheet (e.g., '1.DATA_SHOW_WEB').
+       * @returns {string|null} The key of the primary ID column, or null if not found.
+       */
+      function getPrimaryIdKey(sheetName) {
+        const headers = headersConfig[sheetName];
+        if (headers) {
+          const idHeader = headers.find((h) => h.isId);
+          return idHeader ? idHeader.key : null;
+        }
+        return null;
+      }
+
+      /**
+       * Displays the sidebar for mobile navigation.
+       */
+      function showSidebar() {
+        sidebar.classList.remove("-translate-x-full");
+        sidebar.classList.add("translate-x-0");
+        sidebarBackdrop.classList.remove("hidden");
+      }
+
+      /**
+       * Hides the sidebar.
+       */
+      function hideSidebar() {
+        sidebar.classList.remove("translate-x-0");
+        sidebar.classList.add("-translate-x-full");
+        sidebarBackdrop.classList.add("hidden");
+      }
+
+      /**
+       * Shows a toast notification with a given message.
+       * @param {string} message - The message to display.
+       * @param {number} duration - How long the toast should be visible in milliseconds.
+       */
+      function showToast(message, duration = 3000) {
+        toastNotification.textContent = message;
+        toastNotification.classList.remove("hidden", "opacity-0");
+        toastNotification.classList.add("opacity-100");
+        setTimeout(() => {
+          toastNotification.classList.remove("opacity-100");
+          toastNotification.classList.add("opacity-0");
+          setTimeout(() => {
+            toastNotification.classList.add("hidden");
+          }, 300);
+        }, duration);
+      }
+
+      /**
+       * Displays the loading indicator and overlays the main content.
+       */
+      function showLoading() {
+        loadingIndicator.classList.remove("hidden");
+        mainContent.classList.add("opacity-50", "pointer-events-none");
+      }
+
+      /**
+       * Hides the loading indicator and restores main content interactivity.
+       */
+      function hideLoading() {
+        loadingIndicator.classList.add("hidden");
+        mainContent.classList.remove("opacity-50", "pointer-events-none");
+      }
+
+      /**
+       * Fetches data from the Google Apps Script with exponential backoff.
+       * @param {string} url - The URL to fetch.
+       * @param {Object} options - Fetch options.
+       * @param {number} retries - Current retry count.
+       * @param {number} delay - Current delay before retrying.
+       * @returns {Promise<Response>} A promise that resolves with the fetch Response.
+       */
+      async function retryFetch(url, options = {}, retries = 3, delay = 1000) {
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok && response.status === 429 && retries > 0) {
+            // Too Many Requests
+            console.warn(`Rate limit hit. Retrying in ${delay}ms...`);
+            await new Promise((res) => setTimeout(res, delay));
+            return retryFetch(url, options, retries - 1, delay * 2);
+          }
+          return response;
+        } catch (error) {
+          if (retries > 0) {
+            console.warn(`Fetch failed. Retrying in ${delay}ms...`, error);
+            await new Promise((res) => setTimeout(res, delay));
+            return retryFetch(url, options, retries - 1, delay * 2);
+          }
+          // Log the specific error for debugging
+          console.error(
+            `Error final setelah percobaan ulang: ${error.message}. Pastikan SCRIPT_URL sudah benar dan Google Apps Script Anda sudah di-deploy sebagai Web App dengan akses yang sesuai.`
+          );
+          throw error; // Re-throw if no retries left
+        }
+      }
+
+      /**
+       * Fetches data from the Google Apps Script.
+       * @param {string} sheetName - The name of the Google Sheet to fetch data from.
+       * @param {boolean} forceRefresh - If true, bypasses the cache and fetches fresh data.
+       * @returns {Promise<Array>} A promise that resolves with the fetched data.
+       */
+      async function fetchData(sheetName, forceRefresh = false) {
+        // Return cached data if available and no force refresh is requested
+        if (dataCache[sheetName] && !forceRefresh) {
+          return dataCache[sheetName];
+        }
+
+        showLoading();
+        let data = [];
+        try {
+          // Use retryFetch instead of direct fetch
+          const response = await retryFetch(`${SCRIPT_URL}?sheet=${sheetName}`);
+          if (!response.ok) {
+            const errorText = `HTTP error! Status: ${response.status} - ${
+              response.statusText || "Unknown error"
+            }`;
+            console.error("Fetch failed:", errorText);
+            // Add specific message for SCRIPT_URL issues
+            console.error(
+              "Pastikan SCRIPT_URL sudah benar dan Google Apps Script Anda sudah di-deploy sebagai Web App dengan akses yang sesuai."
+            );
+            throw new Error(errorText);
+          }
+          data = await response.json();
+          dataCache[sheetName] = data; // Cache the fetched data
+          lastUpdatedText.textContent = `Terakhir diperbarui: ${new Date().toLocaleString()}`;
+          showToast(`Data dari '${sheetName}' berhasil diperbarui!`, 1500);
+        } catch (error) {
+          console.error(`Error fetching data from '${sheetName}':`, error);
+          showToast(
+            `Gagal memuat data dari '${sheetName}'. Detail: ${error.message}`,
+            5000
+          );
+        } finally {
+          hideLoading();
+        }
+        return data;
+      }
+
+      /**
+       * Filters the data based on input criteria for a given tab.
+       * @param {string} tabName - The name of the tab to apply filters for.
+       * @param {Array} originalData - The unfiltered data.
+       * @returns {Array} The filtered data.
+       */
+      function filterData(tabName, originalData) {
+        let filtered = [...originalData]; // Create a shallow copy to avoid modifying original data
+
+        if (tabName === "pelamar") {
+          const posisiFilter = document
+            .getElementById("filter-pelamar-posisi")
+            .value.toLowerCase();
+          const statusFilter = document
+            .getElementById("filter-pelamar-status")
+            .value.toLowerCase();
+          const nikFilter = document
+            .getElementById("filter-pelamar-nik")
+            .value.toLowerCase();
+
+          filtered = filtered.filter((item) => {
+            const matchesPosisi = posisiFilter
+              ? item["Posisi Dilamar"] &&
+                item["Posisi Dilamar"].toLowerCase().includes(posisiFilter)
+              : true;
+            const matchesStatus = statusFilter
+              ? item["Status"] &&
+                item["Status"].toLowerCase().includes(statusFilter)
+              : true;
+            const matchesNik = nikFilter
+              ? item["ID"] &&
+                String(item["ID"]).toLowerCase().includes(nikFilter)
+              : true;
+            return matchesPosisi && matchesStatus && matchesNik;
+          });
+        } else if (tabName === "screening") {
+          const posisiFilter = document
+            .getElementById("filter-screening-posisi")
+            .value.toLowerCase();
+          const statusFilter = document
+            .getElementById("filter-screening-status")
+            .value.toLowerCase();
+          const nikFilter = document
+            .getElementById("filter-screening-nik")
+            .value.toLowerCase();
+
+          filtered = filtered.filter((item) => {
+            const matchesPosisi = posisiFilter
+              ? item["Posisi Dilamar"] &&
+                item["Posisi Dilamar"].toLowerCase().includes(posisiFilter)
+              : true;
+            const matchesStatus = statusFilter
+              ? item["Status"] &&
+                item["Status"].toLowerCase().includes(statusFilter)
+              : true;
+            const matchesNik = nikFilter
+              ? item["ID"] &&
+                String(item["ID"]).toLowerCase().includes(nikFilter)
+              : true;
+            return matchesPosisi && matchesStatus && matchesNik;
+          });
+        }
+        return filtered;
+      }
+
+      /**
+       * Applies the filter and re-renders the table for the specified tab.
+       * @param {string} tabName - The name of the tab to filter.
+       */
+      function applyFilter(tabName) {
+        const currentSheetName = sheetMapping[tabName];
+        const originalData = dataCache[currentSheetName] || [];
+        const filteredData = filterData(tabName, originalData);
+
+        if (tabName === "pelamar") {
+          renderTable(
+            "pelamar-data-table",
+            filteredData,
+            headersConfig["1.DATA_SHOW_WEB"]
+          ); // Updated header config name
+        } else if (tabName === "screening") {
+          renderTable(
+            "screening-data-table",
+            filteredData,
+            headersConfig["3. SCREENING KANDIDAT"],
+            true
+          );
+        }
+      }
+
+      /**
+       * Renders data into an HTML table.
+       * @param {string} containerId - The ID of the HTML element where the table will be rendered.
+       * @param {Array} data - The array of objects containing table data.
+       * @param {Array} headers - An array of header objects ({ key: 'dataKey', label: 'Display Label', isId: boolean }).
+       * @param {boolean} enableSelection - If true, adds checkboxes for row selection.
+       */
+      function renderTable(
+        containerId,
+        data,
+        headers,
+        enableSelection = false
+      ) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Display message if no data is found
+        if (!data || data.length === 0) {
+          container.innerHTML = `<p class="text-gray-600 p-4">Tidak ada data ditemukan untuk tab ini.</p>`;
+          return;
+        }
+
+        // Get the primary ID key for the current active tab's sheet
+        const primaryIdKey = getPrimaryIdKey(sheetMapping[activeTab]);
+
+        let tableHtml = `<table class="min-w-full divide-y divide-gray-200">
+                                <thead class="sticky-header"><tr>`;
+
+        // Add a checkbox column if selection is enabled
+        if (enableSelection) {
+          tableHtml += `<th class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <input type="checkbox" id="select-all-candidates" class="rounded text-indigo-600">
+                              </th>`;
+        }
+
+        // Add table headers
+        headers.forEach((header) => {
+          tableHtml += `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${header.label}</th>`;
+        });
+        tableHtml += `</tr></thead><tbody class="bg-white divide-y divide-gray-200">`;
+
+        // Populate table rows with data
+        data.forEach((item) => {
+          // Ensure the ID used for data-id and comparison is the actual NIK from the sheet
+          const itemId = item[primaryIdKey];
+          // Check if the current item is already selected in the cache (using NIK for comparison)
+          const isSelected = selectedCandidates.some(
+            (candidate) => candidate[primaryIdKey] == itemId
+          );
+          tableHtml += `<tr class="hover:bg-gray-100 ${
+            isSelected ? "bg-indigo-50" : ""
+          }" data-id="${itemId}">`;
+
+          if (enableSelection) {
+            tableHtml += `<td class="p-4 whitespace-nowrap">
+                                    <input type="checkbox" class="candidate-checkbox rounded text-indigo-600" data-id="${itemId}" ${
+              isSelected ? "checked" : ""
+            }>
+                                  </td>`;
+          }
+
+          headers.forEach((header) => {
+            let cellValue = item[header.key] || "-";
+            // Format date values if the key indicates a date
+            if (header.key.includes("Tanggal") && cellValue !== "-") {
+              try {
+                const date = new Date(cellValue);
+                cellValue = date.toLocaleDateString("id-ID"); // Example: 1/1/2023
+              } catch (e) {
+                // Keep original value if date parsing fails
+              }
+            }
+            tableHtml += `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${cellValue}</td>`;
+          });
+          tableHtml += `</tr>`;
+        });
+
+        tableHtml += `</tbody></table>`;
+        container.innerHTML = tableHtml;
+
+        // Add event listeners for checkboxes if selection is enabled
+        if (enableSelection) {
+          const selectAllCheckbox = container.querySelector(
+            "#select-all-candidates"
+          );
+          const candidateCheckboxes = container.querySelectorAll(
+            ".candidate-checkbox"
+          );
+
+          // Event listener for "Select All" checkbox
+          if (selectAllCheckbox) {
+            // Check if element exists before adding listener
+            selectAllCheckbox.addEventListener("change", (e) => {
+              candidateCheckboxes.forEach((checkbox) => {
+                checkbox.checked = e.target.checked;
+                const candidateId = checkbox.dataset.id;
+                const candidate = data.find(
+                  (item) => item[primaryIdKey] == candidateId
+                );
+                if (e.target.checked) {
+                  if (
+                    candidate &&
+                    !selectedCandidates.some(
+                      (s) => s[primaryIdKey] == candidate[primaryIdKey]
+                    )
+                  ) {
+                    selectedCandidates.push(candidate);
+                  }
+                } else {
+                  selectedCandidates = selectedCandidates.filter(
+                    (s) => s[primaryIdKey] != candidateId
+                  );
+                }
+              });
+              saveSelectedCandidatesToLocalStorage(); // Save changes to local storage
+            });
+          }
+
+          // Event listeners for individual candidate checkboxes
+          candidateCheckboxes.forEach((checkbox) => {
+            checkbox.addEventListener("change", (e) => {
+              const candidateId = e.target.dataset.id;
+              const candidate = data.find(
+                (item) => item[primaryIdKey] == candidateId
+              );
+              if (e.target.checked) {
+                if (
+                  candidate &&
+                  !selectedCandidates.some(
+                    (s) => s[primaryIdKey] == candidate[primaryIdKey]
+                  )
+                ) {
+                  selectedCandidates.push(candidate);
+                }
+              } else {
+                selectedCandidates = selectedCandidates.filter(
+                  (s) => s[primaryIdKey] != candidateId
+                );
+              }
+              saveSelectedCandidatesToLocalStorage(); // Save changes to local storage
+            });
+          });
+        }
+      }
+
+      /**
+       * Shows the specified tab content and loads its data.
+       * @param {string} tabName - The name of the tab to show (e.g., 'pelamar').
+       */
+      async function showTab(tabName) {
+        activeTab = tabName;
+
+        // Update tab button styles to show active state
+        document
+          .querySelectorAll(".tab-button")
+          .forEach((btn) => btn.classList.remove("active"));
+        document.getElementById(`tab-${tabName}`).classList.add("active");
+
+        // Hide all tab content divs
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((contentDiv) => contentDiv.classList.add("hidden"));
+
+        const currentSheetName = sheetMapping[tabName];
+        // Always fetch fresh data for the current tab when switching
+        let currentData = await fetchData(currentSheetName);
+
+        // Show the selected tab's content and render its table
+        const contentDiv = document.getElementById(`${tabName}-content`);
+        if (contentDiv) {
+          contentDiv.classList.remove("hidden");
+          // Apply filter and render table based on the active tab
+          if (tabName === "pelamar") {
+            applyFilter("pelamar"); // Apply filters for pelamar tab
+          } else if (tabName === "screening") {
+            applyFilter("screening"); // Apply filters for screening tab
+          } else if (tabName === "ptk") {
+            renderTable("ptk-data-table", currentData, headersConfig["1. PTK"]);
+          } else if (tabName === "loker") {
+            renderTable(
+              "loker-data-table",
+              currentData,
+              headersConfig["2. UPDATE_LOKER"]
+            );
+            // Populate form if an existing Loker is selected (future enhancement)
+          } else if (tabName === "process") {
+            renderTable(
+              "process-data-table",
+              currentData,
+              headersConfig["4. PROCESS KANDIDAT"]
+            );
+          }
+        }
+      }
+
+      /**
+       * Forces a refresh of the data for a given tab and re-renders it.
+       * @param {string} tabName - The name of the tab to refresh.
+       */
+      async function refreshTab(tabName) {
+        const currentSheetName = sheetMapping[tabName];
+        await fetchData(currentSheetName, true); // Force refresh of data
+        showTab(tabName); // Re-render the tab with fresh data
+      }
+
+      // --- Local Storage for Selected Candidates ---
+
+      /**
+       * Loads selected candidates from local storage.
+       */
+      function loadSelectedCandidatesFromLocalStorage() {
+        try {
+          const storedSelection = localStorage.getItem("selectedCandidates");
+          if (storedSelection) {
+            selectedCandidates = JSON.parse(storedSelection);
+          }
+        } catch (e) {
+          console.error(
+            "Error loading selected candidates from local storage:",
+            e
+          );
+          selectedCandidates = []; // Reset if parsing fails
+        }
+      }
+
+      /**
+       * Saves selected candidates to local storage.
+       */
+      function saveSelectedCandidatesToLocalStorage() {
+        try {
+          localStorage.setItem(
+            "selectedCandidates",
+            JSON.stringify(selectedCandidates)
+          );
+        } catch (e) {
+          console.error(
+            "Error saving selected candidates to local storage:",
+            e
+          );
+        }
+      }
+
+      // --- Screening Tab Specific Logic ---
+
+      /**
+       * Saves the currently selected candidates to the '5.PILIHAN_CACA' sheet.
+       * This operation copies the data without removing it from the source.
+       */
+      async function saveSelectedCandidates() {
+        if (selectedCandidates.length === 0) {
+          showToast("Tidak ada kandidat yang dipilih untuk disimpan.", 3000);
+          return;
+        }
+
+        showLoading();
+        const sheetName = "5.PILIHAN_CACA";
+        const primaryIdKey = getPrimaryIdKey(sheetMapping["screening"]); // Get the ID key for 1.DATA_SHOW_WEB (screening source)
+
+        // Map selected candidates to the structure required by '5.PILIHAN_CACA'
+        const candidatesToSave = selectedCandidates.map((candidate) => {
+          // Basic NIK validation: ensure NIK is a non-empty string
+          if (
+            !candidate[primaryIdKey] ||
+            typeof candidate[primaryIdKey] !== "string" ||
+            candidate[primaryIdKey].trim() === ""
+          ) {
+            showToast(
+              `NIK tidak valid untuk kandidat '${
+                candidate["Nama"] || "Tidak Diketahui"
+              }'. Penyimpanan dibatalkan.`,
+              5000
+            );
+            throw new Error("Invalid NIK found."); // Stop the process if NIK is invalid
+          }
+          return {
+            ID: candidate[primaryIdKey], // Use the NIK (which is stored under 'ID' key)
+            Nama: candidate["Nama"],
+            "Posisi Dilamar": candidate["Posisi Dilamar"],
+            "Status Screening": "Terpilih", // Default status for screened candidates
+            "Tanggal Screening": new Date().toLocaleDateString("id-ID"), // Current date
+          };
+        });
+
+        try {
+          const payload = {
+            action: "add", // Action to add data to the sheet
+            sheet: sheetName,
+            data: candidatesToSave,
+          };
+          // Use retryFetch for POST requests as well
+          const response = await retryFetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "application/json" },
+          });
+          if (!response.ok) {
+            const errorText = `HTTP error! Status: ${response.status} - ${
+              response.statusText || "Unknown error"
+            }`;
+            console.error("Fetch failed:", errorText);
+            // Add specific message for SCRIPT_URL issues
+            console.error(
+              "Pastikan SCRIPT_URL sudah benar dan Google Apps Script Anda sudah di-deploy sebagai Web App dengan akses yang sesuai."
+            );
+            throw new Error(errorText);
+          }
+          const result = await response.json();
+          if (result && result.status === "success") {
+            showToast(
+              `${selectedCandidates.length} kandidat berhasil disimpan ke '${sheetName}'!`
+            );
+            selectedCandidates = []; // Clear selection after successful save
+            saveSelectedCandidatesToLocalStorage(); // Update local storage
+            // Re-fetch 1.DATA_SHOW_WEB to reflect any potential status updates (if your Apps Script updates status)
+            await fetchData("1.DATA_SHOW_WEB", true);
+            showTab("screening"); // Re-render screening tab to update checkboxes and table
+          } else {
+            showToast("Gagal menyimpan pilihan kandidat.");
+          }
+        } catch (error) {
+          console.error("Error saving selected candidates:", error);
+          // Only show a generic error if the specific NIK error was already shown
+          if (!error.message.includes("Invalid NIK")) {
+            showToast(
+              "Gagal menyimpan pilihan kandidat. Detail: " + error.message
+            );
+          }
+        } finally {
+          hideLoading();
+        }
+      }
+
+      /**
+       * Clears the temporary selection of candidates without affecting the database.
+       */
+      function clearSelectedCandidates() {
+        selectedCandidates = []; // Empty the temporary cache
+        saveSelectedCandidatesToLocalStorage(); // Update local storage
+        showToast("Pilihan kandidat telah dibersihkan.", 1500);
+        showTab("screening"); // Re-render screening tab to uncheck all checkboxes
+      }
+
+      // --- Job Posting/Update Form Logic ---
+      lokerForm.addEventListener("submit", async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        showLoading();
+
+        const formData = {
+          "ID Loker": lokerIdInput.value.trim(),
+          Posisi: lokerPosisiInput.value.trim(),
+          Departemen: lokerDepartemenInput.value.trim(),
+          "Tanggal Buka": lokerTglBukaInput.value,
+          "Tanggal Tutup": lokerTglTutupInput.value,
+          Status: lokerStatusSelect.value,
+        };
+
+        // Determine action: 'add' for new, 'update' for existing
+        const action = formData["ID Loker"] ? "update" : "add";
+        const sheetName = "2. UPDATE_LOKER";
+
+        try {
+          const payload = {
+            action: action,
+            sheet: sheetName,
+            data: formData,
+          };
+
+          // Use retryFetch for POST requests as well
+          const response = await retryFetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify(payload),
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (!response.ok) {
+            const errorText = `HTTP error! Status: ${response.status} - ${
+              response.statusText || "Unknown error"
+            }`;
+            console.error("Fetch failed:", errorText);
+            // Add specific message for SCRIPT_URL issues
+            console.error(
+              "Pastikan SCRIPT_URL sudah benar dan Google Apps Script Anda sudah di-deploy sebagai Web App dengan akses yang sesuai."
+            );
+            throw new Error(errorText);
+          }
+          const result = await response.json();
+          if (result && result.status === "success") {
+            showToast(
+              `Lowongan berhasil ${
+                action === "add" ? "ditambahkan" : "diperbarui"
+              }!`
+            );
+            lokerForm.reset(); // Clear form after successful submission
+            await fetchData(sheetName, true); // Refresh loker data
+            showTab("loker"); // Re-render loker tab
+          } else {
+            showToast(
+              `Gagal ${
+                action === "add" ? "menambahkan" : "memperbarui"
+              } lowongan.`
+            );
+          }
+        } catch (error) {
+          console.error(
+            `Error ${action === "add" ? "adding" : "updating"} loker:`,
+            error
+          );
+          showToast(
+            `Gagal ${
+              action === "add" ? "menambahkan" : "memperbarui"
+            } lowongan. Detail: ` + error.message
+          );
+        } finally {
+          hideLoading();
+        }
+      });
+
+      // --- Event Listeners ---
+      sidebarToggleBtn.addEventListener("click", showSidebar);
+      sidebarBackdrop.addEventListener("click", hideSidebar);
+
+      saveScreeningBtn.addEventListener("click", saveSelectedCandidates);
+      clearScreeningBtn.addEventListener("click", clearSelectedCandidates);
+
+      // Initial data fetch and tab display on page load
+      document.addEventListener("DOMContentLoaded", async () => {
+        loadSelectedCandidatesFromLocalStorage(); // Load selected candidates from local storage
+
+        // Define all sheet names that need to be fetched initially
+        const sheetNamesToFetch = Object.values(sheetMapping);
+        // Ensure '5.PILIHAN_CACA' is also fetched if it's not already part of the main mapping
+        if (!sheetNamesToFetch.includes("5.PILIHAN_CACA")) {
+          sheetNamesToFetch.push("5.PILIHAN_CACA");
+        }
+
+        // Fetch data for all required sheets concurrently
+        await Promise.all(
+          sheetNamesToFetch.map((sheetName) => fetchData(sheetName))
+        );
+
+        // Show the default tab ('pelamar') after initial data is loaded
+        showTab("pelamar");
+      });
+    </script>
+  </body>
+</html>
