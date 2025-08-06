@@ -564,18 +564,18 @@ function renderRecruitmentTabPage(sheetName) {
     tbody.innerHTML = paginatedData
       .map((row) => {
         const applicantId = row.ID_Pelamar;
-        const uniqueId = `${sheetName}|${applicantId}`; // ID unik gabungan sheet dan ID pelamar
-        const isSelected = selectedApplicants.has(uniqueId); // Periksa ID unik ini
+        const uniqueId = `${sheetName}|${applicantId}`; // <-- BARIS PENTING 1gabungan sheet dan ID pelamar
+        const isSelected = selectedApplicants.has(uniqueId); // <-- BARIS PENTING 2 // Periksa ID unik ini
         return `<tr class="border-b hover:bg-indigo-50 ${
           isSelected ? "bg-indigo-100" : ""
         }">
-          <td class="p-3 text-center">
-            <input type="checkbox" onchange="toggleApplicantSelection(this, '${sheetName}', '${applicantId}')" class="rounded border-gray-300" ${
+      <td class="p-3 text-center">
+        <input type="checkbox" onchange="toggleApplicantSelection(this, '${sheetName}', '${applicantId}')" class="rounded border-gray-300" ${
           isSelected ? "checked" : ""
         } data-applicant-id="${applicantId}">
-          </td>
-          ${headers.map((h) => `<td class="p-3">${row[h] || ""}</td>`).join("")}
-        </tr>`;
+      </td>
+      ${headers.map((h) => `<td class="p-3">${row[h] || ""}</td>`).join("")}
+    </tr>`;
       })
       .join("");
   }

@@ -6,6 +6,7 @@
     <title>ACA Web</title>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -113,6 +114,27 @@
 
       <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
         <div id="dashboard-page" class="page">
+          <div class="flex border-b mb-6">
+            <button
+              onclick="switchDashboardTab('personal')"
+              class="dashboard-tab active flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="user-circle"></i> Personal
+            </button>
+            <button
+              onclick="switchDashboardTab('rekrutmen')"
+              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="users"></i> Rekrutmen
+            </button>
+            <button
+              onclick="switchDashboardTab('sp')"
+              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="file-warning"></i> Surat Peringatan
+            </button>
+          </div>
+
           <div class="flex items-center gap-2 mb-6">
             <span class="text-sm font-semibold text-gray-600">Periode:</span>
             <button
@@ -140,6 +162,8 @@
               Semua Waktu
             </button>
           </div>
+
+          <div class="flex items-center gap-2 mb-6"></div>
 
           <div
             id="dashboard-personal-content"
