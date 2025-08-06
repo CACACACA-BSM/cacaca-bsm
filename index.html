@@ -3,949 +3,2090 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AQHSA SHOFIA - Dashboard Karyawan</title>
+    <title>HRIS Dashboard</title>
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Chart.js library -->
+
+    <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
       body {
         font-family: "Inter", sans-serif;
-        background-color: #f4f5f8;
+        background-color: #f1f5f9; /* slate-100 */
       }
-      .sidebar {
-        width: 256px;
-        min-width: 256px;
-      }
-      .content {
-        flex-grow: 1;
-      }
-      .card {
-        box-shadow: 0 4px 6px -1-px rgba(0, 0, 0, 0.1),
-          0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        border-radius: 12px;
-      }
-      .chart-container {
-        position: relative;
-        height: 400px; /* Default height for charts */
-        width: 100%;
-      }
-      .tab-button {
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        font-weight: 500;
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-      }
-      .tab-button.active {
-        background-color: #4f46e5; /* indigo-600 */
+      .active-nav {
+        background-color: #3b82f6; /* blue-500 */
         color: white;
       }
-      .tab-button:not(.active):hover {
-        background-color: #e0e7ff; /* indigo-100 */
-        color: #4338ca; /* indigo-700 */
+      .sidebar-link:hover {
+        background-color: #f1f5f9; /* slate-100 */
+      }
+      .active-nav:hover {
+        background-color: #2563eb; /* blue-600 */
+      }
+      /* Custom scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #e2e8f0;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+      .chart-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
+          0 1px 2px -1px rgb(0 0 0 / 0.1);
+      }
+      .dashboard-tab.active {
+        border-bottom: 2px solid #3b82f6;
+        color: #3b82f6;
+        font-weight: 600;
+      }
+      .dashboard-tab {
+        border-bottom: 2px solid transparent;
+        color: #64748b;
+      }
+      .recruitment-tab-active {
+        background-color: #3b82f6;
+        color: white;
+      }
+      .recruitment-tab-inactive {
+        background-color: #eef2ff;
+        color: #4f46e5;
+      }
+      .detail-tab-active {
+        border-bottom-color: #3b82f6;
+        color: #3b82f6;
+      }
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* --- Sidebar Hover Styles --- */
+      #sidebar {
+        width: 5rem; /* w-20 */
+        transition: width 0.3s ease-in-out;
+      }
+      #main-content {
+        margin-left: 5rem; /* w-20 */
+        transition: margin-left 0.3s ease-in-out;
+      }
+      .nav-text,
+      .logo-text,
+      .user-info {
+        display: none;
+        opacity: 0;
+        transition: opacity 0.2s ease-in-out;
+      }
+
+      body.sidebar-expanded #sidebar {
+        width: 16rem; /* w-64 */
+      }
+      body.sidebar-expanded #main-content {
+        margin-left: 16rem; /* w-64 */
+      }
+      body.sidebar-expanded .nav-text,
+      body.sidebar-expanded .logo-text,
+      body.sidebar-expanded .user-info {
+        display: inline-block;
+        opacity: 1;
+      }
+      body.sidebar-expanded .logo-container {
+        justify-content: center;
+      }
+      .logo-container {
+        justify-content: center;
+      }
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        color: white;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.5s, transform 0.5s;
+        transform: translateY(20px);
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .toast.success {
+        background-color: #22c55e;
+      }
+      .toast.error {
+        background-color: #ef4444;
       }
     </style>
   </head>
-  <body class="flex flex-col min-h-screen">
-    <!-- Header -->
-    <header
-      class="bg-white shadow-sm py-4 px-6 flex items-center justify-between lg:justify-start lg:space-x-4 z-10 sticky top-0"
+  <body class="flex h-screen overflow-hidden text-gray-800">
+    <!-- Sidebar -->
+    <aside
+      id="sidebar"
+      class="bg-white text-gray-600 flex-shrink-0 flex flex-col z-20"
     >
-      <button
-        id="sidebar-toggle-btn"
-        class="lg:hidden p-2 rounded-md text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      >
-        <svg
-          class="h-6 w-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
+      <div class="h-20 flex items-center logo-container px-6">
+        <i data-lucide="slack" class="w-8 h-8 text-blue-600 flex-shrink-0"></i>
+        <span class="logo-text ml-2 text-2xl font-bold text-blue-600"
+          >HRIS</span
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          ></path>
-        </svg>
-      </button>
-      <h1 class="text-2xl font-bold text-gray-800">AQHSA SHOFIA - HRIS</h1>
-      <div class="flex items-center space-x-4 ml-auto">
-        <svg
-          class="h-6 w-6 text-gray-500"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-          ></path>
-        </svg>
-        <div class="relative">
-          <img
-            src="https://placehold.co/40x40/94a3b8/ffffff?text=U"
-            alt="User"
-            class="w-10 h-10 rounded-full cursor-pointer"
-          />
-        </div>
       </div>
-    </header>
+      <nav class="flex-1 px-4 py-2 space-y-2">
+        <a
+          href="#"
+          onclick="showPage('dashboard')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold active-nav"
+        >
+          <i
+            data-lucide="layout-dashboard"
+            class="w-5 h-5 mr-3 flex-shrink-0"
+          ></i>
+          <span class="nav-text">Dashboard</span>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('manpower')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold sidebar-link"
+        >
+          <i data-lucide="users" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+          <span class="nav-text">Employee</span>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('surat_peringatan')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold sidebar-link"
+        >
+          <i data-lucide="file-warning" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+          <span class="nav-text">Peringatan</span>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('leave_application')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold sidebar-link"
+        >
+          <i data-lucide="calendar-off" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+          <span class="nav-text">Cuti</span>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('recruitment')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold sidebar-link"
+        >
+          <i data-lucide="user-plus" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+          <span class="nav-text">Recruitment</span>
+        </a>
+        <a
+          href="#"
+          onclick="showPage('activity_log')"
+          class="nav-link flex items-center px-4 py-2.5 rounded-lg font-semibold sidebar-link"
+        >
+          <i data-lucide="history" class="w-5 h-5 mr-3 flex-shrink-0"></i>
+          <span class="nav-text">Activity Log</span>
+        </a>
+      </nav>
+    </aside>
 
     <!-- Main Content -->
-    <div class="flex flex-1 overflow-hidden">
-      <!-- Sidebar -->
-      <aside
-        id="sidebar"
-        class="sidebar bg-white p-6 overflow-y-auto border-r border-gray-200 fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-20"
+    <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header
+        class="h-20 flex items-center justify-between px-8 bg-white border-b"
       >
-        <div class="flex items-center space-x-2 mb-8">
-          <span class="text-xl font-bold">ONLY FOR CACA</span>
-        </div>
-        <nav class="space-y-4">
-          <a
-            href="index.html"
-            class="flex items-center space-x-3 p-3 rounded-lg bg-indigo-500 text-white font-semibold"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-              ></path>
-            </svg>
-            <span>Dashboard</span>
-          </a>
-          <a
-            href="employee.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 4.354a4 4 0 110 5.292M15 21H9a6 6 0 01-6-6v-1a6 6 0 016-6h6a6 6 0 016 6v1a6 6 0 01-6 6z"
-              ></path>
-            </svg>
-            <span>Employee</span>
-          </a>
-          <a
-            href="reporting.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 4h4a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm0 0H7a2 2 0 01-2-2v-6a2 2 0 012-2h2a2 2 0 012 2v6a2 2 0 01-2 2z"
-              ></path>
-            </svg>
-            <span>Reporting</span>
-          </a>
-          <a
-            href="leave.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-4 8v.01M12 12v.01M12 16v.01M3 20h18M3 10h18a2 2 0 012 2v4a2 2 0 01-2 2H3a2 2 0 01-2-2v-4a2 2 0 012-2z"
-              ></path>
-            </svg>
-            <span>Leave</span>
-          </a>
-          <a
-            href="recruitment.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2m-2 0h-2m-2 0V3m-2 2h2m0 0h2m-2 0v2m4-2h2m-2 0v2"
-              ></path>
-            </svg>
-            <span>Recruitment Process</span>
-          </a>
-          <a
-            href="generate_letter.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12h6m-6 4h6m-6 4h6m-6-4h.01M12 4v4m0 0h.01M12 8h-2m2 0h2m-2 0v-2m-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2m-2 0H9a2 2 0 00-2 2v4a2 2 0 002 2h6a2 2 0 002-2v-4a2 2 0 00-2-2z"
-              ></path>
-            </svg>
-            <span>Generate Letter</span>
-          </a>
-          <a
-            href="surat_peringatan.html"
-            class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-          >
-            <svg
-              class="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4h.01m-6 5h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"
-              ></path>
-            </svg>
-            <span>Surat Peringatan</span>
-          </a>
-          <div class="pt-4 border-t border-gray-200">
-            <a
-              href="settings.html"
-              class="flex items-center space-x-3 p-3 rounded-lg text-gray-600 hover:bg-indigo-100 hover:text-indigo-700"
-            >
-              <svg
-                class="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m-6 4H4m-2 4h16a2 2 0 002-2v-4a2 2 0 00-2-2H4a2 2 0 00-2 2v4a2 2 0 002 2z"
-                ></path>
-              </svg>
-              <span>Settings</span>
-            </a>
-          </div>
-        </nav>
-      </aside>
-
-      <div
-        id="sidebar-backdrop"
-        class="fixed inset-0 bg-black bg-opacity-50 z-10 hidden lg:hidden"
-      ></div>
-
-      <!-- Main Content Area -->
-      <main class="content p-6 overflow-y-auto">
-        <div class="flex items-center justify-between mb-2">
-          <h2 id="page-title" class="text-2xl font-bold text-gray-800">
-            Dashboard Karyawan
-          </h2>
-        </div>
-        <p id="last-updated-text" class="text-xs text-gray-500 mb-4"></p>
-
-        <!-- Tab Navigation -->
-        <div class="flex space-x-4 mb-6 border-b border-gray-200">
-          <button
-            id="tab-karyawan"
-            class="tab-button active"
-            onclick="showTab('karyawan')"
-          >
-            Data Karyawan
+        <h1 id="page-title" class="text-2xl font-bold text-gray-800">
+          Dashboard
+        </h1>
+        <div class="flex items-center space-x-6">
+          <button class="text-gray-500 hover:text-gray-800">
+            <i data-lucide="search" class="w-6 h-6"></i>
           </button>
-          <button
-            id="tab-surat-peringatan"
-            class="tab-button"
-            onclick="showTab('surat-peringatan')"
-          >
-            Surat Peringatan
+          <button class="text-gray-500 hover:text-gray-800">
+            <i data-lucide="bell" class="w-6 h-6"></i>
           </button>
+          <div class="flex items-center">
+            <img
+              src="https://placehold.co/40x40/60a5fa/ffffff?text=S"
+              alt="User Avatar"
+              class="rounded-full"
+            />
+            <div class="ml-3 text-right">
+              <p class="font-semibold text-sm">CACA - PT BSM</p>
+              <p class="text-xs text-gray-500">
+                aqshasofiawardaniptbsmmge@gmail.com
+              </p>
+            </div>
+          </div>
         </div>
+      </header>
 
-        <div
-          id="loading-indicator"
-          class="text-center py-8 text-gray-500 hidden"
-        >
-          Memuat data...
-        </div>
+      <!-- Page Content -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page">
+          <div class="flex border-b mb-6">
+            <button
+              onclick="switchDashboardTab('personal')"
+              class="dashboard-tab active flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="user-circle"></i> Personal
+            </button>
+            <button
+              onclick="switchDashboardTab('rekrutmen')"
+              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="users"></i> Rekrutmen
+            </button>
+            <button
+              onclick="switchDashboardTab('sp')"
+              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+            >
+              <i data-lucide="file-warning"></i> Surat Peringatan
+            </button>
+          </div>
 
-        <!-- Content for Data Karyawan Tab -->
-        <div
-          id="karyawan-content"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <!-- Chart for MARITAL STATUS -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Status Pernikahan
-            </h3>
-            <div class="chart-container">
-              <canvas id="maritalStatusChart"></canvas>
+          <div
+            id="dashboard-personal-content"
+            class="dashboard-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Agama</h3>
+              <div class="relative h-64">
+                <canvas id="religionChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Status Pernikahan</h3>
+              <div class="relative h-64">
+                <canvas id="maritalChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Pendidikan</h3>
+              <div class="relative h-64">
+                <canvas id="educationChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Departemen</h3>
+              <div class="relative h-64">
+                <canvas id="departmentChart"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Status POH</h3>
+              <div class="relative h-64"><canvas id="pohChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">Gender</h3>
+              <div class="relative h-64">
+                <canvas id="genderChart"></canvas>
+              </div>
             </div>
           </div>
 
-          <!-- Chart for GENDER -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Jenis Kelamin
-            </h3>
-            <div class="chart-container">
-              <canvas id="genderChart"></canvas>
+          <div
+            id="dashboard-rekrutmen-content"
+            class="dashboard-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <div class="chart-card md:col-span-2">
+              <h3 class="font-semibold mb-4">Funnel Rekrutmen</h3>
+              <div class="relative h-96">
+                <canvas id="recruitmentFunnelChart"></canvas>
+              </div>
             </div>
           </div>
 
-          <!-- Chart for RELIGION -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Agama</h3>
-            <div class="chart-container">
-              <canvas id="religionChart"></canvas>
+          <div
+            id="dashboard-sp-content"
+            class="dashboard-content hidden grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">SP per Sanksi</h3>
+              <div class="relative h-80">
+                <canvas id="spBySanksiChart"></canvas>
+              </div>
             </div>
-          </div>
-
-          <!-- Chart for GRADE -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Grade</h3>
-            <div class="chart-container">
-              <canvas id="gradeChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for DEPARTMENT -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Departemen</h3>
-            <div class="chart-container">
-              <canvas id="departmentChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for POSITION -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Posisi</h3>
-            <div class="chart-container">
-              <canvas id="positionChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for EDUCATION -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Pendidikan</h3>
-            <div class="chart-container">
-              <canvas id="educationChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for POH -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">POH</h3>
-            <div class="chart-container">
-              <canvas id="pohChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for STATUS POH -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Status POH</h3>
-            <div class="chart-container">
-              <canvas id="statusPohChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for PROVINCE -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Provinsi</h3>
-            <div class="chart-container">
-              <canvas id="provinceChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for HIRING DATE (e.g., by year) -->
-          <div class="bg-white p-4 rounded-xl card col-span-full">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Tanggal Bergabung
-            </h3>
-            <div class="flex space-x-2 mb-4">
-              <button
-                id="hiringDateYearBtn"
-                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
-              >
-                Tahun
-              </button>
-              <button
-                id="hiringDateMonthBtn"
-                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
-              >
-                Bulan
-              </button>
-            </div>
-            <div class="chart-container">
-              <canvas id="hiringDateChart"></canvas>
+            <div class="chart-card">
+              <h3 class="font-semibold mb-4">SP per Departemen</h3>
+              <div class="relative h-80">
+                <canvas id="spByDeptChart"></canvas>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Content for Surat Peringatan Tab -->
-        <div
-          id="surat-peringatan-content"
-          class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <!-- Chart for DEPARTMENT SP -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Departemen (SP)
-            </h3>
-            <div class="chart-container">
-              <canvas id="departmentSPChart"></canvas>
+        <!-- Manpower Page -->
+        <div id="manpower-page" class="page hidden">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold">All Personel</h2>
+              <div class="flex items-center gap-4">
+                <button
+                  onclick="openAddEmployeeModal()"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm font-semibold"
+                >
+                  <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Employee
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-500 bg-gray-50">
+                  <tr>
+                    <th class="p-3 font-semibold">NRP</th>
+                    <th class="p-3 font-semibold">Nama</th>
+                    <th class="p-3 font-semibold">Department</th>
+                    <th class="p-3 font-semibold">Position</th>
+                    <th class="p-3 font-semibold">Grade</th>
+                    <th class="p-3 font-semibold">Hiring Date</th>
+                    <th class="p-3 font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="manpower-table-body"></tbody>
+              </table>
             </div>
           </div>
+        </div>
 
-          <!-- Chart for POSITION SP -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Posisi (SP)
-            </h3>
-            <div class="chart-container">
-              <canvas id="positionSPChart"></canvas>
+        <!-- Surat Peringatan Page -->
+        <div id="surat_peringatan-page" class="page hidden">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h3 class="font-bold text-lg mb-4">Searching Form</h3>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+              <input type="date" class="border p-2 rounded-lg" />
+              <select class="border p-2 rounded-lg">
+                <option>All Status</option>
+              </select>
+              <select class="border p-2 rounded-lg">
+                <option>All Dept</option>
+              </select>
+              <button class="bg-blue-600 text-white rounded-lg">Show</button>
             </div>
-          </div>
-
-          <!-- Chart for SANKSI SP -->
-          <div class="bg-white p-4 rounded-xl card">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Sanksi (SP)
-            </h3>
-            <div class="chart-container">
-              <canvas id="sanksiSPChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Chart for TANGGAL KEJADIAN SP (Time Chart) -->
-          <div class="bg-white p-4 rounded-xl card col-span-full">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">
-              Tanggal Kejadian (SP)
-            </h3>
-            <div class="flex space-x-2 mb-4">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <button
+                  onclick="openAddSPModal()"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm font-semibold"
+                >
+                  <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add SP
+                </button>
+              </div>
               <button
-                id="tanggalKejadianYearBtn"
-                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+                class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold"
               >
-                Tahun
+                Export
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-500 bg-gray-50">
+                  <tr>
+                    <th class="p-3 font-semibold">Waktu Kejadian</th>
+                    <th class="p-3 font-semibold">NRP</th>
+                    <th class="p-3 font-semibold">Nama</th>
+                    <th class="p-3 font-semibold">Posisi</th>
+                    <th class="p-3 font-semibold">Sanksi</th>
+                    <th class="p-3 font-semibold">Jenis</th>
+                    <th class="p-3 font-semibold">Status</th>
+                    <th class="p-3 font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="sp-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Application Page -->
+        <div id="leave_application-page" class="page hidden">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold">Pengajuan Cuti</h2>
+              <button
+                onclick="openAddLeaveModal()"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm font-semibold"
+              >
+                <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Ajukan Cuti
+              </button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-500 bg-gray-50">
+                  <tr>
+                    <th class="p-3 font-semibold">ID Dokumen</th>
+                    <th class="p-3 font-semibold">NRP</th>
+                    <th class="p-3 font-semibold">Nama Pekerja</th>
+                    <th class="p-3 font-semibold">Tanggal Berangkat</th>
+                    <th class="p-3 font-semibold">Tanggal Kembali</th>
+                    <th class="p-3 font-semibold">Status</th>
+                    <th class="p-3 font-semibold text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="leave-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recruitment Page -->
+        <div id="recruitment-page" class="page hidden">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-bold">Pengelolaan Data Rekrutmen</h2>
+              <div class="flex items-center gap-4">
+                <button
+                  onclick="openProcessApplicantModal()"
+                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center text-sm font-semibold"
+                >
+                  <i data-lucide="user-check" class="w-5 h-5 mr-2"></i> Proses
+                  Kandidat
+                </button>
+                <button
+                  onclick="openAddApplicantModal()"
+                  class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm font-semibold"
+                >
+                  <i data-lucide="plus" class="w-5 h-5 mr-2"></i> Add Applicant
+                </button>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-6">
+              <button
+                onclick="showRecruitmentTab('Pelamar_Masuk')"
+                class="recruitment-tab recruitment-tab-active text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Pelamar Masuk
               </button>
               <button
-                id="tanggalKejadianMonthBtn"
-                class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300"
+                onclick="showRecruitmentTab('Kandidat_Terpilih')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
               >
-                Bulan
+                Kandidat Terpilih
+              </button>
+              <button
+                onclick="showRecruitmentTab('Proses_Pelamar')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Proses Pelamar
+              </button>
+              <button
+                onclick="showRecruitmentTab('Proses_Lanjutan')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Proses Lanjutan
+              </button>
+              <button
+                onclick="showRecruitmentTab('Proses_Insite')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Proses Insite
+              </button>
+              <button
+                onclick="showRecruitmentTab('Pelamar_Final')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Pelamar Final
+              </button>
+              <button
+                onclick="showRecruitmentTab('Pelamar_Tersisih')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Pelamar Tersisih
+              </button>
+              <button
+                onclick="showRecruitmentTab('Dashboard_Analisis')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Dashboard Analisis
+              </button>
+              <button
+                onclick="showRecruitmentTab('PTK_Permintaan_Tenaga_Kerja')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                PTK
+              </button>
+              <button
+                onclick="showRecruitmentTab('Job_Posting')"
+                class="recruitment-tab recruitment-tab-inactive text-sm font-semibold py-2 px-4 rounded-lg"
+              >
+                Job Posting
               </button>
             </div>
-            <div class="chart-container">
-              <canvas id="tanggalKejadianSPChart"></canvas>
+            <div id="recruitment-tab-content" class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead
+                  id="recruitment-table-head"
+                  class="text-gray-500 bg-gray-50"
+                ></thead>
+                <tbody id="recruitment-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity Log Page -->
+        <div id="activity_log-page" class="page hidden">
+          <div class="bg-white p-6 rounded-xl shadow-sm">
+            <h2 class="text-xl font-bold mb-4">Activity Log</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-gray-500 bg-gray-50">
+                  <tr>
+                    <th class="p-3 font-semibold">Timestamp</th>
+                    <th class="p-3 font-semibold">User</th>
+                    <th class="p-3 font-semibold">Action</th>
+                    <th class="p-3 font-semibold">Target ID</th>
+                    <th class="p-3 font-semibold">Description</th>
+                  </tr>
+                </thead>
+                <tbody id="activity-log-table-body"></tbody>
+              </table>
             </div>
           </div>
         </div>
       </main>
     </div>
 
-    <!-- Toast Notification -->
+    <!-- Modals -->
     <div
-      id="toast-notification"
-      class="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-xl hidden transition-opacity duration-300"
+      id="modal-backdrop"
+      class="fixed inset-0 bg-black/50 z-40 hidden"
     ></div>
 
-    <!-- Footer -->
-    <footer
-      class="bg-white py-4 px-6 text-center text-sm text-gray-500 border-t border-gray-200 mt-auto"
+    <div
+      id="employeeModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 z-50 hidden"
     >
-      DEVELOP BY KAK AFA
-    </footer>
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="employee-modal-title" class="text-xl font-semibold"></h3>
+        <button
+          onclick="closeModal('employeeModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="p-5 max-h-[70vh] overflow-y-auto">
+        <div class="border-b border-gray-200">
+          <nav
+            id="employee-modal-tabs"
+            class="-mb-px flex space-x-8"
+            aria-label="Tabs"
+          >
+            <a
+              href="#"
+              onclick="switchDetailTab(event, 'personal-data')"
+              class="detail-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm detail-tab-active"
+              >Personal Data</a
+            >
+            <a
+              href="#"
+              onclick="switchDetailTab(event, 'family-data')"
+              class="detail-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              >Family</a
+            >
+          </nav>
+        </div>
+        <div id="personal-data-content" class="detail-tab-content py-6">
+          <form id="employeeForm">
+            <input type="hidden" id="edit-nrp" />
+            <div
+              id="employee-form-fields"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
+            >
+              <!-- All 46 fields will be generated by JS -->
+            </div>
+          </form>
+        </div>
+        <div id="family-data-content" class="detail-tab-content py-6 hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="p-2 text-left font-semibold">Nama Keluarga</th>
+                  <th class="p-2 text-left font-semibold">Hubungan</th>
+                  <th class="p-2 text-left font-semibold">Tanggal Lahir</th>
+                  <th class="p-2 text-center font-semibold">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="family-table-body"></tbody>
+            </table>
+            <button
+              onclick="addFamilyRow()"
+              class="mt-4 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 text-sm font-semibold flex items-center"
+            >
+              <i data-lucide="plus" class="w-4 h-4 mr-2"></i> Tambah Anggota
+              Keluarga
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('employeeModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-50 font-semibold"
+        >
+          Close
+        </button>
+        <button
+          id="employee-submit-btn"
+          type="submit"
+          form="employeeForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="spModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="sp-modal-title" class="text-xl font-semibold"></h3>
+        <button
+          onclick="closeModal('spModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="p-5 max-h-[70vh] overflow-y-auto">
+        <form id="spForm">
+          <div
+            id="sp-form-fields"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
+          >
+            <!-- SP form fields will be generated here -->
+          </div>
+        </form>
+      </div>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('spModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Cancel</button
+        ><button
+          id="sp-submit-btn"
+          type="submit"
+          form="spForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="leaveModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="leave-modal-title" class="text-xl font-semibold"></h3>
+        <button
+          onclick="closeModal('leaveModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="p-5 max-h-[70vh] overflow-y-auto">
+        <form id="leaveForm">
+          <div
+            id="leave-form-fields"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
+          >
+            <!-- Leave form fields will be generated here -->
+          </div>
+        </form>
+      </div>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('leaveModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Cancel</button
+        ><button
+          id="leave-submit-btn"
+          type="submit"
+          form="leaveForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="spDetailModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="sp-detail-modal-title" class="text-xl font-semibold"></h3>
+        <button
+          onclick="closeModal('spDetailModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div id="sp-detail-content" class="p-6 space-y-4"></div>
+    </div>
+
+    <div
+      id="applicantModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-1/2 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="applicant-modal-title" class="text-xl font-semibold"></h3>
+        <button
+          onclick="closeModal('applicantModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <form id="applicantForm" class="p-6 space-y-4">
+        <input type="hidden" id="applicant-id" />
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Nama Lengkap</label
+          ><input
+            type="text"
+            id="applicant-name"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Posisi Dilamar</label
+          ><input
+            type="text"
+            id="applicant-position"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Email</label
+          ><input
+            type="email"
+            id="applicant-email"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >No Telepon</label
+          ><input
+            type="tel"
+            id="applicant-phone"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+          />
+        </div>
+      </form>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('applicantModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Cancel</button
+        ><button
+          id="applicant-submit-btn"
+          type="submit"
+          form="applicantForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="processApplicantModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-1/3 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 class="text-xl font-semibold">Proses Kandidat Terpilih</h3>
+        <button
+          onclick="closeModal('processApplicantModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <form id="processApplicantForm" class="p-6 space-y-4">
+        <div>
+          <label
+            for="applicant-identifier"
+            class="block text-sm font-medium text-gray-700"
+            >Masukkan NIK atau No. Telepon Pelamar</label
+          >
+          <input
+            type="text"
+            id="applicant-identifier"
+            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
+            placeholder="NIK atau No. Telepon"
+          />
+        </div>
+      </form>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('processApplicantModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Batal</button
+        ><button
+          id="process-applicant-submit-btn"
+          type="submit"
+          form="processApplicantForm"
+          class="bg-green-600 text-white px-4 py-2 rounded-lg"
+        >
+          Proses
+        </button>
+      </div>
+    </div>
+
+    <div
+      id="confirmDeleteModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 sm:w-1/3 z-50 hidden"
+    >
+      <div class="p-6 text-center">
+        <i
+          data-lucide="alert-triangle"
+          class="w-16 h-16 text-red-500 mx-auto"
+        ></i>
+        <h3 class="text-xl font-semibold mt-4">Anda yakin?</h3>
+        <p class="text-gray-500 mt-2">
+          Apakah Anda yakin ingin menghapus data ini? Proses ini tidak dapat
+          dibatalkan.
+        </p>
+      </div>
+      <div class="px-6 py-4 bg-gray-50 flex justify-center space-x-4">
+        <button
+          onclick="closeModal('confirmDeleteModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Batal
+        </button>
+        <button
+          id="confirm-delete-btn"
+          class="bg-red-600 text-white px-4 py-2 rounded-lg"
+        >
+          Ya, Hapus
+        </button>
+      </div>
+    </div>
+
+    <div id="toast-notification" class="toast"></div>
 
     <script>
-      const SCRIPT_URL =
-        "https://script.google.com/macros/s/AKfycbwL0IjiReteHPDgmnKjNdU_vXxcZUERrPByQmcjJpd11NhAVIo0QM3XWuXa2ZyJaiSo/exec";
+      // --- CONFIGURATION ---
+      const WEB_APP_URL =
+        "https://script.google.com/macros/s/AKfycbxn-a_yqBukHWBvrQsDs937DHt_sAJ72rR5WXOuXOnTmF_rILrsIegiY62707pOeKl8uA/exec";
+      const MANPOWER_HEADERS = [
+        "NRP",
+        "NAME",
+        "GENDER",
+        "COMPANY",
+        "MARITAL STATUS",
+        "RELIGION",
+        "DEPARTMENT",
+        "SECTION",
+        "POSITION",
+        "GRADE",
+        "PLACE OF BIRTH",
+        "DATE OF BIRTH",
+        "EDUCATION",
+        "MESS",
+        "POH",
+        "HIRING DATE",
+        "EMAIL",
+        "PHONE NUMBER",
+        "EMERGENCY NUMBER",
+        "KTP NUMBER",
+        "NPWP",
+        "ACCOUNT NUMBER",
+        "BANK NAME",
+        "ACCOUNT HOLDER NAME",
+        "LEAVE PERIOD",
+        "STATUS POH",
+        "ADDRESS",
+        "VILLAGE",
+        "SUB-DISTRICT",
+        "CITY",
+        "PROVINCE",
+        "INSURANCE PREMIUM",
+        "DAR",
+        "UDL",
+        "BLOOD TYPE",
+        "BPJS EMPLOYMENT",
+        "BPJS HEALTH",
+        "PRIVATE INSURANCE",
+        "INSURANCE PROVIDER",
+        "MCU EXPIRATION",
+        "SHIRT SIZE",
+        "PANTS SIZE",
+        "SHOE SIZE",
+        "KTP FAMILY NUMBER",
+        "SUPERVISOR NRP",
+        "STATUS",
+      ];
+      const SP_HEADERS = [
+        "ID DOKUMEN",
+        "NRP",
+        "NAME",
+        "COMPANY",
+        "DEPARTMENT",
+        "POSITION",
+        "TANGGAL KEJADIAN",
+        "WAKTU KEJADIAN",
+        "SANKSI",
+        "JENIS",
+        "LOKASI",
+        "URAIAN",
+        "MINEPERMIT",
+        "SIMPER",
+        "MASA GROUNDED",
+        "JADWAL GROUNDED",
+        "JADWAL DIRUMAHKAN",
+        "STATUS",
+        "DIBUAT OLEH",
+        "PADA TANGGAL",
+      ];
+      const LEAVE_HEADERS = [
+        "NRP",
+        "STATUS",
+        "ID DOKUMEN",
+        "TANGGAL PENGAJUAN",
+        "CUTI ISTIRAHAT",
+        "CUTI BESAR",
+        "CUTI SEMINAR",
+        "CUTI TAHUNAN",
+        "CUTI LAPANGAN",
+        "NAMA PEKERJA",
+        "DEPT",
+        "JABATAN",
+        "POSISI",
+        "CATATAN",
+        "ATASAN",
+        "POH",
+        "TANGGAL BERANGKAT",
+        "TANGGAL KEMBALI",
+        "PERUSAHAAN",
+        "TANGGAL APPROVED",
+        "TANGGAL CONFIRMED",
+      ];
 
-      let employeeData = [];
-      let violationData = [];
-      let isLoading = false;
-      let activeTab = "karyawan"; // Default active tab
+      // --- GLOBAL STATE ---
+      let appData = {
+        manpower: [],
+        suratPeringatan: [],
+        leaveApplication: [],
+        recruitment: {},
+        activityLog: [],
+      };
+      let charts = {};
 
-      let charts = {}; // To store chart instances for destruction
-
-      let currentHiringDateView = "year"; // 'year' or 'month'
-      let currentTanggalKejadianView = "year"; // 'year' or 'month'
-
-      // DOM elements
-      const sidebar = document.getElementById("sidebar");
-      const sidebarToggleBtn = document.getElementById("sidebar-toggle-btn");
-      const sidebarBackdrop = document.getElementById("sidebar-backdrop");
-      const lastUpdatedText = document.getElementById("last-updated-text");
-      const toastNotification = document.getElementById("toast-notification");
-      const loadingIndicator = document.getElementById("loading-indicator");
-      const mainContent = document.querySelector("main");
-
-      // Tab elements
-      const tabKaryawanBtn = document.getElementById("tab-karyawan");
-      const tabSuratPeringatanBtn = document.getElementById(
-        "tab-surat-peringatan"
-      );
-      const karyawanContent = document.getElementById("karyawan-content");
-      const suratPeringatanContent = document.getElementById(
-        "surat-peringatan-content"
-      );
-
-      // Hiring Date View buttons
-      const hiringDateYearBtn = document.getElementById("hiringDateYearBtn");
-      const hiringDateMonthBtn = document.getElementById("hiringDateMonthBtn");
-
-      // Tanggal Kejadian View buttons
-      const tanggalKejadianYearBtn = document.getElementById(
-        "tanggalKejadianYearBtn"
-      );
-      const tanggalKejadianMonthBtn = document.getElementById(
-        "tanggalKejadianMonthBtn"
-      );
-
-      function showSidebar() {
-        sidebar.classList.remove("-translate-x-full");
-        sidebar.classList.add("translate-x-0");
-        sidebarBackdrop.classList.remove("hidden");
-      }
-
-      function hideSidebar() {
-        sidebar.classList.remove("translate-x-0");
-        sidebar.classList.add("-translate-x-full");
-        sidebarBackdrop.classList.add("hidden");
-      }
-
-      function showToast(message, duration = 3000) {
-        toastNotification.textContent = message;
-        toastNotification.classList.remove("hidden", "opacity-0");
-        toastNotification.classList.add("opacity-100");
+      // --- UTILITIES ---
+      function showToast(message, type = "success") {
+        const toast = document.getElementById("toast-notification");
+        toast.textContent = message;
+        toast.className = `toast show ${type}`;
         setTimeout(() => {
-          toastNotification.classList.remove("opacity-100");
-          toastNotification.classList.add("opacity-0");
-          setTimeout(() => {
-            toastNotification.classList.add("hidden");
-          }, 300);
-        }, duration);
+          toast.classList.remove("show");
+        }, 3000);
       }
 
-      function showLoading() {
-        isLoading = true;
-        mainContent.classList.add("opacity-50", "pointer-events-none");
-        loadingIndicator.classList.remove("hidden");
+      // --- PAGE & TAB NAVIGATION ---
+      const pageTitle = document.getElementById("page-title");
+      function showPage(pageId) {
+        document
+          .querySelectorAll(".page")
+          .forEach((page) => page.classList.add("hidden"));
+        document.getElementById(pageId + "-page").classList.remove("hidden");
+
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.classList.remove("active-nav");
+          link.classList.add("sidebar-link");
+        });
+        const activeLink = document.querySelector(
+          `.nav-link[onclick="showPage('${pageId}')"]`
+        );
+        activeLink.classList.add("active-nav");
+        activeLink.classList.remove("sidebar-link");
+
+        const titleText = activeLink.querySelector(".nav-text").textContent;
+        pageTitle.textContent = titleText;
+
+        // Fetch data if the page is being shown
+        if (pageId === "dashboard") {
+          switchDashboardTab("personal");
+        }
+        if (pageId === "manpower" && appData.manpower.length === 0)
+          fetchManpowerData();
+        if (
+          pageId === "surat_peringatan" &&
+          appData.suratPeringatan.length === 0
+        )
+          fetchSPData();
+        if (
+          pageId === "leave_application" &&
+          appData.leaveApplication.length === 0
+        )
+          fetchLeaveData();
+        if (
+          pageId === "recruitment" &&
+          Object.keys(appData.recruitment).length === 0
+        )
+          showRecruitmentTab("Pelamar_Masuk");
+        if (pageId === "activity_log" && appData.activityLog.length === 0)
+          fetchActivityLog();
       }
 
-      function hideLoading() {
-        isLoading = false;
-        mainContent.classList.remove("opacity-50", "pointer-events-none");
-        loadingIndicator.classList.add("hidden");
+      function switchDashboardTab(tabId) {
+        document
+          .querySelectorAll(".dashboard-content")
+          .forEach((c) => c.classList.add("hidden"));
+        document
+          .getElementById(`dashboard-${tabId}-content`)
+          .classList.remove("hidden");
+
+        document.querySelectorAll(".dashboard-tab").forEach((t) => {
+          t.classList.remove("active");
+          if (t.getAttribute("onclick").includes(tabId))
+            t.classList.add("active");
+        });
+
+        if (tabId === "personal") {
+          if (appData.manpower.length === 0)
+            fetchManpowerData().then(renderPersonalDashboardCharts);
+          else renderPersonalDashboardCharts();
+        }
+        if (tabId === "rekrutmen") {
+          if (Object.keys(appData.recruitment).length === 0)
+            fetchAllRecruitmentData().then(renderRecruitmentDashboardCharts);
+          else renderRecruitmentDashboardCharts();
+        }
+        if (tabId === "sp") {
+          if (appData.suratPeringatan.length === 0)
+            fetchSPData().then(renderSPDashboardCharts);
+          else renderSPDashboardCharts();
+        }
       }
 
-      async function fetchData(sheetName) {
-        showLoading();
-        let data = [];
-        try {
-          const response = await fetch(`${SCRIPT_URL}?sheet=${sheetName}`);
-          if (!response.ok) {
-            const errorText = `HTTP error! Status: ${response.status} - ${
-              response.statusText || "Unknown error"
-            }`;
-            console.error("Fetch failed:", errorText);
-            throw new Error(errorText);
-          }
-          data = await response.json();
-
-          if (sheetName === "DATA_KARYAWAN") {
-            employeeData = data;
-          } else if (sheetName === "REPORT_PELANGGARAN") {
-            violationData = data;
-          }
-          lastUpdatedText.textContent = `Terakhir diperbarui: ${new Date().toLocaleString()}`;
-          showToast("Data berhasil diperbarui!", 1500);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-          showToast(
-            `Gagal terhubung ke server. Periksa koneksi atau URL Apps Script. Detail: ${error.message}`,
-            5000
+      function showRecruitmentTab(sheetName) {
+        if (!appData.recruitment[sheetName]) {
+          fetchRecruitmentData(sheetName);
+        } else {
+          renderRecruitmentTable(sheetName);
+        }
+        document.querySelectorAll(".recruitment-tab").forEach((tab) => {
+          tab.classList.remove(
+            "recruitment-tab-active",
+            "recruitment-tab-inactive"
           );
-        } finally {
-          hideLoading();
-        }
-        return data;
-      }
-
-      // --- Chart Data Processing Functions ---
-      function processChartData(data, fieldName) {
-        const counts = {};
-        data.forEach((item) => {
-          const value = item[fieldName] || "Tidak Diketahui";
-          counts[value] = (counts[value] || 0) + 1;
+          tab.classList.add(
+            tab.getAttribute("onclick").includes(sheetName)
+              ? "recruitment-tab-active"
+              : "recruitment-tab-inactive"
+          );
         });
-        return {
-          labels: Object.keys(counts),
-          data: Object.values(counts),
-        };
       }
 
-      function processDateData(data, dateFieldName, viewMode) {
-        const counts = {};
-        data.forEach((item) => {
-          const dateString = item[dateFieldName];
-          if (dateString) {
-            try {
-              const date = new Date(dateString);
-              let key;
-              if (viewMode === "year") {
-                key = date.getFullYear().toString();
-              } else if (viewMode === "month") {
-                key = date.toLocaleString("id-ID", {
-                  year: "numeric",
-                  month: "short",
-                });
-              }
-              // For 'week', a more complex grouping by week number might be needed.
-              // For simplicity, for 'week' view, we can default to daily or monthly.
-              // For now, only 'year' and 'month' are fully supported.
-              if (key) {
-                counts[key] = (counts[key] || 0) + 1;
-              }
-            } catch (e) {
-              console.warn(
-                `Invalid date format for ${dateFieldName}: ${dateString}`
-              );
-            }
+      function switchDetailTab(event, tabId) {
+        event.preventDefault();
+        document
+          .querySelectorAll(".detail-tab-content")
+          .forEach((c) => c.classList.add("hidden"));
+        document.getElementById(tabId + "-content").classList.remove("hidden");
+        document.querySelectorAll(".detail-tab").forEach((t) => {
+          t.classList.remove("detail-tab-active", "text-gray-500");
+          if (t.getAttribute("onclick").includes(tabId)) {
+            t.classList.add("detail-tab-active");
           } else {
-            counts["Tidak Diketahui"] = (counts["Tidak Diketahui"] || 0) + 1;
+            t.classList.add("text-gray-500");
           }
         });
-        // Sort by year or month
-        const sortedKeys = Object.keys(counts).sort((a, b) => {
-          if (viewMode === "year") {
-            return parseInt(a) - parseInt(b);
-          } else if (viewMode === "month") {
-            // Custom sort for month names (e.g., Jan 2023, Feb 2023)
-            const [monthA, yearA] = a.split(" ");
-            const [monthB, yearB] = b.split(" ");
-            if (yearA !== yearB) return parseInt(yearA) - parseInt(yearB);
-            const monthOrder = [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "Mei",
-              "Jun",
-              "Jul",
-              "Agu",
-              "Sep",
-              "Okt",
-              "Nov",
-              "Des",
-            ];
-            return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
+        if (tabId === "family-data") {
+          const nrp = document.getElementById("edit-nrp").value;
+          fetchFamilyData(nrp);
+        }
+      }
+
+      // --- MODAL LOGIC ---
+      const modalBackdrop = document.getElementById("modal-backdrop");
+      function openModal(modalId) {
+        document.getElementById(modalId)?.classList.remove("hidden");
+        modalBackdrop.classList.remove("hidden");
+      }
+      function closeModal(modalId) {
+        document.getElementById(modalId)?.classList.add("hidden");
+        modalBackdrop.classList.add("hidden");
+      }
+      modalBackdrop.addEventListener(
+        "click",
+        () =>
+          document
+            .querySelectorAll(".modal")
+            .forEach((m) => m.classList.add("hidden")) ||
+          modalBackdrop.classList.add("hidden")
+      );
+
+      // --- DATA FETCHING ---
+      function showLoader(tbodyId) {
+        const tbody = document.getElementById(tbodyId);
+        if (tbody)
+          tbody.innerHTML = `<tr><td colspan="100%" class="text-center p-8"><div class="loader mx-auto"></div></td></tr>`;
+      }
+
+      async function apiCall(params, options = {}) {
+        const url = new URL(WEB_APP_URL);
+        Object.keys(params).forEach((key) =>
+          url.searchParams.append(key, params[key])
+        );
+
+        try {
+          const response = await fetch(url, options);
+          if (
+            response.type === "opaque" ||
+            (response.redirected && options.method === "POST")
+          ) {
+            return { success: true };
           }
-          return 0;
+          if (!response.ok)
+            throw new Error(
+              `Network response was not ok: ${response.statusText}`
+            );
+          return response.json();
+        } catch (error) {
+          if (options.method === "POST" && error.name === "TypeError") {
+            return { success: true };
+          }
+          throw error;
+        }
+      }
+
+      async function fetchManpowerData() {
+        showLoader("manpower-table-body");
+        try {
+          const result = await apiCall({ action: "getManpowerData" });
+          if (result.success) {
+            appData.manpower = result.data;
+            renderManpowerTable();
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "manpower-table-body"
+          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
+        }
+      }
+
+      async function fetchSPData() {
+        showLoader("sp-table-body");
+        try {
+          const result = await apiCall({ action: "getSPData" });
+          if (result.success) {
+            appData.suratPeringatan = result.data;
+            renderSPTable();
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "sp-table-body"
+          ).innerHTML = `<tr><td colspan="8" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
+        }
+      }
+
+      async function fetchLeaveData() {
+        showLoader("leave-table-body");
+        try {
+          const result = await apiCall({ action: "getLeaveData" });
+          if (result.success) {
+            appData.leaveApplication = result.data;
+            renderLeaveTable();
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "leave-table-body"
+          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
+        }
+      }
+
+      async function fetchFamilyData(nrp) {
+        showLoader("family-table-body");
+        try {
+          const result = await apiCall({ action: "getFamilyData" }); // Fetches all family data
+          if (result.success) {
+            const familyMembers = result.data.filter(
+              (member) => member.NRP == nrp
+            );
+            renderFamilyTable(familyMembers);
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "family-table-body"
+          ).innerHTML = `<tr><td colspan="4" class="text-center p-4 text-red-500">Gagal memuat data keluarga: ${error.message}</td></tr>`;
+        }
+      }
+
+      async function fetchRecruitmentData(sheetName) {
+        showLoader("recruitment-table-body");
+        try {
+          const result = await apiCall({
+            action: "getRecruitmentData",
+            sheet: sheetName,
+          });
+          if (result.success) {
+            appData.recruitment[sheetName] = result.data;
+            renderRecruitmentTable(sheetName);
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "recruitment-table-body"
+          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
+        }
+      }
+
+      async function fetchAllRecruitmentData() {
+        const sheetsToFetch = [
+          "Pelamar_Masuk",
+          "Proses_Pelamar",
+          "Kandidat_Terpilih",
+          "Pelamar_Final",
+        ];
+        const promises = sheetsToFetch.map((sheetName) => {
+          if (!appData.recruitment[sheetName]) {
+            return apiCall({ action: "getRecruitmentData", sheet: sheetName })
+              .then((result) => {
+                if (result.success) {
+                  appData.recruitment[sheetName] = result.data;
+                }
+              })
+              .catch((e) => {
+                console.error(`Failed to fetch ${sheetName}:`, e);
+                appData.recruitment[sheetName] = [];
+              });
+          }
+          return Promise.resolve();
         });
-        return {
-          labels: sortedKeys,
-          data: sortedKeys.map((key) => counts[key]),
-        };
+        await Promise.all(promises);
       }
 
-      function generateRandomColors(num) {
-        const colors = [];
-        for (let i = 0; i < num; i++) {
-          const r = Math.floor(Math.random() * 200);
-          const g = Math.floor(Math.random() * 200);
-          const b = Math.floor(Math.random() * 200);
-          colors.push(`rgba(${r}, ${g}, ${b}, 0.7)`);
+      async function fetchActivityLog() {
+        showLoader("activity-log-table-body");
+        try {
+          const result = await apiCall({ action: "getActivityLog" });
+          if (result.success) {
+            appData.activityLog = result.data;
+            renderActivityLogTable();
+          } else throw new Error(result.error);
+        } catch (error) {
+          document.getElementById(
+            "activity-log-table-body"
+          ).innerHTML = `<tr><td colspan="5" class="text-center p-4 text-red-500">Gagal memuat log: ${error.message}</td></tr>`;
         }
-        return colors;
       }
 
-      function createChart(chartId, type, label, chartData, options = {}) {
-        const ctx = document.getElementById(chartId);
-        if (!ctx) return;
-
-        if (charts[chartId]) {
-          charts[chartId].destroy();
-        }
-
-        const defaultOptions = {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: type === "doughnut" ? "right" : "top",
-            },
-            title: {
-              display: false,
-              text: label,
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                precision: 0,
-              },
-            },
-          },
-        };
-
-        // Merge default options with any custom options provided
-        const finalOptions = { ...defaultOptions, ...options };
-
-        // For doughnut charts, remove y-axis scale
-        if (type === "doughnut") {
-          delete finalOptions.scales;
-        }
-
-        const backgroundColors = generateRandomColors(chartData.labels.length);
-        charts[chartId] = new Chart(ctx.getContext("2d"), {
-          type: type,
-          data: {
-            labels: chartData.labels,
-            datasets: [
-              {
-                label: label,
-                data: chartData.data,
-                backgroundColor: backgroundColors,
-                borderColor: backgroundColors.map((color) =>
-                  color.replace("0.7", "1")
-                ),
-                borderWidth: 1,
-              },
-            ],
-          },
-          options: finalOptions,
-        });
-      }
-
-      // --- Render Functions for Tabs ---
-      async function renderKaryawanCharts() {
-        if (employeeData.length === 0) {
-          await fetchData("DATA_KARYAWAN");
-        }
-
-        if (employeeData.length === 0) {
-          karyawanContent.innerHTML = `<div class="text-center py-8 text-gray-500">Tidak ada data karyawan ditemukan untuk membuat grafik.</div>`;
-          return;
-        }
-
-        // Data Karyawan Charts
-        createChart(
-          "maritalStatusChart",
-          "pie",
-          "Status Pernikahan",
-          processChartData(employeeData, "MARITAL STATUS")
-        );
-        createChart(
-          "genderChart",
-          "doughnut",
-          "Jenis Kelamin",
-          processChartData(employeeData, "GENDER")
-        ); // Doughnut
-        createChart(
-          "religionChart",
-          "bar",
-          "Agama",
-          processChartData(employeeData, "RELIGION")
-        );
-        createChart(
-          "gradeChart",
-          "bar",
-          "Grade",
-          processChartData(employeeData, "GRADE")
-        );
-        createChart(
-          "departmentChart",
-          "bar",
-          "Departemen",
-          processChartData(employeeData, "DEPARTMENT")
-        );
-        createChart(
-          "positionChart",
-          "bar",
-          "Posisi",
-          processChartData(employeeData, "POSITION")
-        );
-        createChart(
-          "educationChart",
-          "bar",
-          "Pendidikan",
-          processChartData(employeeData, "EDUCATION")
-        );
-        createChart(
-          "pohChart",
-          "bar",
-          "POH",
-          processChartData(employeeData, "POH")
-        );
-        createChart(
-          "statusPohChart",
-          "doughnut",
-          "Status POH",
-          processChartData(employeeData, "STATUS POH")
-        ); // Doughnut
-        createChart(
-          "provinceChart",
-          "bar",
-          "Provinsi",
-          processChartData(employeeData, "PROVINCE")
-        );
-
-        // Hiring Date Time Chart
-        createChart(
-          "hiringDateChart",
-          "line",
-          "Tanggal Bergabung",
-          processDateData(employeeData, "HIRING DATE", currentHiringDateView)
-        );
-      }
-
-      async function renderSuratPeringatanCharts() {
-        if (violationData.length === 0) {
-          await fetchData("REPORT_PELANGGARAN");
-        }
-
-        if (violationData.length === 0) {
-          suratPeringatanContent.innerHTML = `<div class="text-center py-8 text-gray-500">Tidak ada data surat peringatan ditemukan untuk membuat grafik.</div>`;
-          return;
-        }
-
-        // Surat Peringatan Charts
-        createChart(
-          "departmentSPChart",
-          "bar",
-          "Departemen (SP)",
-          processChartData(violationData, "DEPARTMENT")
-        );
-        createChart(
-          "positionSPChart",
-          "bar",
-          "Posisi (SP)",
-          processChartData(violationData, "POSITION")
-        );
-        createChart(
-          "sanksiSPChart",
-          "pie",
-          "Sanksi (SP)",
-          processChartData(violationData, "SANKSI")
-        );
-
-        // Tanggal Kejadian Time Chart
-        createChart(
-          "tanggalKejadianSPChart",
-          "line",
-          "Tanggal Kejadian (SP)",
-          processDateData(
-            violationData,
-            "TANGGAL KEJADIAN",
-            currentTanggalKejadianView
+      // --- RENDERING ---
+      function renderManpowerTable() {
+        const tbody = document.getElementById("manpower-table-body");
+        tbody.innerHTML = appData.manpower
+          .map(
+            (emp) => `
+                <tr class="border-t hover:bg-gray-50 cursor-pointer" onclick="showEmployeeDetails('${
+                  emp.NRP
+                }')">
+                    <td class="p-3">${emp.NRP || ""}</td>
+                    <td class="p-3 font-semibold">${emp.NAME || ""}</td>
+                    <td class="p-3">${emp.DEPARTMENT || ""}</td>
+                    <td class="p-3">${emp.POSITION || ""}</td>
+                    <td class="p-3">${emp.GRADE || ""}</td>
+                    <td class="p-3">${
+                      emp["HIRING DATE"]
+                        ? new Date(emp["HIRING DATE"]).toLocaleDateString(
+                            "id-ID"
+                          )
+                        : ""
+                    }</td>
+                    <td class="p-3 text-center">
+                        <button onclick="event.stopPropagation(); showEmployeeDetails('${
+                          emp.NRP
+                        }')" class="text-blue-600 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="event.stopPropagation(); confirmDelete('manpower', '${
+                          emp.NRP
+                        }')" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`
           )
-        );
+          .join("");
+        lucide.createIcons();
       }
 
-      // --- Tab Switching Logic ---
-      async function showTab(tabName) {
-        activeTab = tabName;
+      function renderSPTable() {
+        const tbody = document.getElementById("sp-table-body");
+        tbody.innerHTML = appData.suratPeringatan
+          .map(
+            (sp) => `
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="p-3">${
+                      sp["WAKTU KEJADIAN"]
+                        ? new Date(sp["TANGGAL KEJADIAN"]).toLocaleDateString(
+                            "id-ID"
+                          ) +
+                          " " +
+                          sp["WAKTU KEJADIAN"]
+                        : ""
+                    }</td>
+                    <td class="p-3">${sp.NRP || ""}</td>
+                    <td class="p-3 font-semibold">${sp.NAME || ""}</td>
+                    <td class="p-3">${sp.POSITION || ""}</td>
+                    <td class="p-3">${sp.SANKSI || ""}</td>
+                    <td class="p-3">${sp.JENIS || ""}</td>
+                    <td class="p-3"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">${
+                      sp.STATUS || ""
+                    }</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="showSPDetailModal('${
+                          sp["ID DOKUMEN"]
+                        }')" class="text-gray-600 p-1"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`
+          )
+          .join("");
+        lucide.createIcons();
+      }
 
-        // Update button styles
-        tabKaryawanBtn.classList.remove("active");
-        tabSuratPeringatanBtn.classList.remove("active");
+      function renderLeaveTable() {
+        const tbody = document.getElementById("leave-table-body");
+        tbody.innerHTML = appData.leaveApplication
+          .map(
+            (leave) => `
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="p-3">${leave["ID DOKUMEN"] || ""}</td>
+                    <td class="p-3">${leave.NRP || ""}</td>
+                    <td class="p-3 font-semibold">${
+                      leave["NAMA PEKERJA"] || ""
+                    }</td>
+                    <td class="p-3">${
+                      leave["TANGGAL BERANGKAT"]
+                        ? new Date(
+                            leave["TANGGAL BERANGKAT"]
+                          ).toLocaleDateString("id-ID")
+                        : ""
+                    }</td>
+                    <td class="p-3">${
+                      leave["TANGGAL KEMBALI"]
+                        ? new Date(leave["TANGGAL KEMBALI"]).toLocaleDateString(
+                            "id-ID"
+                          )
+                        : ""
+                    }</td>
+                    <td class="p-3"><span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${
+                      leave.STATUS || ""
+                    }</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="showLeaveDetails('${
+                          leave["ID DOKUMEN"]
+                        }')" class="text-blue-600 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                        <button onclick="confirmDelete('leave', '${
+                          leave["ID DOKUMEN"]
+                        }')" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`
+          )
+          .join("");
+        lucide.createIcons();
+      }
 
-        // Hide all content divs
-        karyawanContent.classList.add("hidden");
-        suratPeringatanContent.classList.add("hidden");
+      function renderFamilyTable(familyMembers) {
+        const tbody = document.getElementById("family-table-body");
+        if (familyMembers.length === 0) {
+          tbody.innerHTML = `<tr id="no-family-data"><td colspan="4" class="text-center p-4">Tidak ada data keluarga.</td></tr>`;
+          return;
+        }
+        tbody.innerHTML = familyMembers
+          .map(
+            (m) => `
+                <tr class="border-t" data-family-name="${m["FAMILY NAME"]}">
+                    <td class="p-2"><input type="text" value="${
+                      m["FAMILY NAME"] || ""
+                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
+                    <td class="p-2"><input type="text" value="${
+                      m["FAMILY RELATION CODE"] || ""
+                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
+                    <td class="p-2"><input type="date" value="${
+                      m["BIRTH DATE"]
+                        ? new Date(m["BIRTH DATE"]).toISOString().split("T")[0]
+                        : ""
+                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
+                    <td class="p-2 text-center">
+                        <button onclick="saveFamilyMember(this)" class="text-green-600 p-1"><i data-lucide="save" class="w-4 h-4"></i></button>
+                        <button onclick="deleteFamilyMember(this)" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`
+          )
+          .join("");
+        lucide.createIcons();
+      }
 
-        // Show selected tab content and render charts
-        if (tabName === "karyawan") {
-          tabKaryawanBtn.classList.add("active");
-          karyawanContent.classList.remove("hidden");
-          await renderKaryawanCharts();
-        } else if (tabName === "surat-peringatan") {
-          tabSuratPeringatanBtn.classList.add("active");
-          suratPeringatanContent.classList.remove("hidden");
-          await renderSuratPeringatanCharts();
+      function renderRecruitmentTable(sheetName) {
+        const thead = document.getElementById("recruitment-table-head");
+        const tbody = document.getElementById("recruitment-table-body");
+        const data = appData.recruitment[sheetName] || [];
+        if (data.length === 0) {
+          thead.innerHTML = "";
+          tbody.innerHTML = `<tr><td colspan="1" class="text-center p-4">Tidak ada data di tab ini.</td></tr>`;
+          return;
+        }
+        const headers = Object.keys(data[0]);
+        thead.innerHTML = `<tr>${headers
+          .map(
+            (h) => `<th class="p-3 font-semibold">${h.replace(/_/g, " ")}</th>`
+          )
+          .join("")}</tr>`;
+        tbody.innerHTML = data
+          .map(
+            (row) => `
+                <tr class="border-b">${headers
+                  .map((h) => `<td class="p-3">${row[h] || ""}</td>`)
+                  .join("")}</tr>
+            `
+          )
+          .join("");
+      }
+
+      function renderActivityLogTable() {
+        const tbody = document.getElementById("activity-log-table-body");
+        tbody.innerHTML = appData.activityLog
+          .map(
+            (log) => `
+                <tr class="border-t">
+                    <td class="p-3">${new Date(log.Timestamp).toLocaleString(
+                      "id-ID"
+                    )}</td>
+                    <td class="p-3">${log.User}</td>
+                    <td class="p-3">${log.Action}</td>
+                    <td class="p-3">${log.Target_ID}</td>
+                    <td class="p-3">${log.Description}</td>
+                </tr>
+            `
+          )
+          .join("");
+      }
+
+      // --- CRUD OPERATIONS ---
+      function generateFormFields(containerId, headers, data = {}) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = headers
+          .map(
+            (header) => `
+                <div>
+                    <label class="block text-sm font-medium text-gray-500">${header}</label>
+                    <input type="text" id="form-${header.replace(
+                      / /g,
+                      "-"
+                    )}" value="${
+              data[header] || ""
+            }" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function openAddEmployeeModal() {
+        document.getElementById("employee-modal-title").innerText =
+          "Tambah Karyawan Baru";
+        generateFormFields("employee-form-fields", MANPOWER_HEADERS);
+        document.getElementById("edit-nrp").value = "";
+        openModal("employeeModal");
+        switchDetailTab(new Event("click"), "personal-data");
+      }
+
+      function showEmployeeDetails(nrp) {
+        const employee = appData.manpower.find((emp) => emp.NRP == nrp);
+        if (!employee) return;
+        document.getElementById(
+          "employee-modal-title"
+        ).innerText = `Detail Karyawan: ${employee.NAME}`;
+        document.getElementById("edit-nrp").value = employee.NRP;
+        generateFormFields("employee-form-fields", MANPOWER_HEADERS, employee);
+        openModal("employeeModal");
+        switchDetailTab(new Event("click"), "personal-data");
+      }
+
+      function showSPDetails(id) {
+        const sp = appData.suratPeringatan.find((s) => s["ID DOKUMEN"] == id);
+        if (!sp) return;
+        document.getElementById("sp-modal-title").innerText =
+          "Edit Surat Peringatan";
+        generateFormFields("sp-form-fields", SP_HEADERS, sp);
+        openModal("spModal");
+      }
+
+      async function showSPDetailModal(id) {
+        const sp = appData.suratPeringatan.find((s) => s["ID DOKUMEN"] == id);
+        if (!sp) return;
+
+        document.getElementById("sp-detail-modal-title").innerText =
+          sp["ID DOKUMEN"];
+        const content = document.getElementById("sp-detail-content");
+        content.innerHTML = '<div class="loader mx-auto"></div>';
+        openModal("spDetailModal");
+
+        const detailHtml = SP_HEADERS.map((header) => {
+          if (!["DIBUAT OLEH", "PADA TANGGAL"].includes(header) && sp[header]) {
+            return `<div class="grid grid-cols-3 gap-4"><strong class="col-span-1">${header}</strong><span class="col-span-2">: ${sp[header]}</span></div>`;
+          }
+          return "";
+        }).join("");
+
+        content.innerHTML = detailHtml;
+      }
+
+      function openAddSPModal() {
+        document.getElementById("sp-modal-title").innerText =
+          "Tambah Surat Peringatan";
+        generateFormFields("sp-form-fields", SP_HEADERS);
+        openModal("spModal");
+      }
+
+      function openAddLeaveModal() {
+        document.getElementById("leave-modal-title").innerText =
+          "Tambah Pengajuan Cuti";
+        generateFormFields("leave-form-fields", LEAVE_HEADERS);
+        openModal("leaveModal");
+      }
+
+      function showLeaveDetails(id) {
+        const leave = appData.leaveApplication.find(
+          (l) => l["ID DOKUMEN"] == id
+        );
+        if (!leave) return;
+        document.getElementById("leave-modal-title").innerText =
+          "Edit Pengajuan Cuti";
+        generateFormFields("leave-form-fields", LEAVE_HEADERS, leave);
+        openModal("leaveModal");
+      }
+
+      function openAddApplicantModal() {
+        document.getElementById("applicantForm").reset();
+        document.getElementById("applicant-modal-title").innerText =
+          "Tambah Pelamar Baru";
+        document.getElementById("applicant-id").value = "";
+        openModal("applicantModal");
+      }
+
+      function openProcessApplicantModal() {
+        document.getElementById("processApplicantForm").reset();
+        openModal("processApplicantModal");
+      }
+
+      function confirmDelete(type, id) {
+        openModal("confirmDeleteModal");
+        const btn = document.getElementById("confirm-delete-btn");
+        btn.onclick = async () => {
+          let action;
+          if (type === "manpower") action = "deleteManpower";
+          else if (type === "sp") action = "deleteSP";
+          else if (type === "leave") action = "deleteLeave";
+          else return;
+
+          try {
+            const result = await apiCall({ action, id }, { method: "POST" });
+            showToast("Data berhasil dihapus.");
+            if (type === "manpower") fetchManpowerData();
+            else if (type === "sp") fetchSPData();
+            else if (type === "leave") fetchLeaveData();
+          } catch (error) {
+            showToast(`Gagal menghapus: ${error.message}`, "error");
+          } finally {
+            closeModal("confirmDeleteModal");
+          }
+        };
+      }
+
+      document
+        .getElementById("employeeForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const nrp = document.getElementById("edit-nrp").value;
+          const action = nrp ? "updateManpower" : "addManpower";
+          const data = {};
+          MANPOWER_HEADERS.forEach((header) => {
+            const input = document.getElementById(
+              `form-${header.replace(/ /g, "-")}`
+            );
+            if (input) data[header] = input.value;
+          });
+          if (!nrp) data.NRP = data.NRP || `EMP-${Date.now()}`;
+
+          try {
+            const result = await apiCall(
+              { action, id: nrp },
+              { method: "POST", body: JSON.stringify(data) }
+            );
+            showToast(
+              `Data karyawan berhasil ${nrp ? "diperbarui" : "ditambahkan"}.`
+            );
+            fetchManpowerData();
+          } catch (error) {
+            showToast(`Proses gagal: ${error.message}`, "error");
+          } finally {
+            closeModal("employeeModal");
+          }
+        });
+
+      document
+        .getElementById("spForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const idInput = document.getElementById("form-ID-DOKUMEN");
+          const id = idInput.value;
+          const action =
+            id && appData.suratPeringatan.some((sp) => sp["ID DOKUMEN"] === id)
+              ? "updateSP"
+              : "addSP";
+
+          const data = {};
+          SP_HEADERS.forEach((header) => {
+            const input = document.getElementById(
+              `form-${header.replace(/ /g, "-")}`
+            );
+            if (input) data[header] = input.value;
+          });
+          if (action === "addSP") {
+            data["ID DOKUMEN"] = data["ID DOKUMEN"] || `SP-${Date.now()}`;
+          }
+
+          try {
+            const result = await apiCall(
+              { action, id: data["ID DOKUMEN"] },
+              { method: "POST", body: JSON.stringify(data) }
+            );
+            showToast(
+              `Surat peringatan berhasil ${
+                action === "updateSP" ? "diperbarui" : "ditambahkan"
+              }.`
+            );
+            fetchSPData();
+          } catch (error) {
+            showToast(`Proses gagal: ${error.message}`, "error");
+          } finally {
+            closeModal("spModal");
+          }
+        });
+
+      document
+        .getElementById("leaveForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const idInput = document.getElementById("form-ID-DOKUMEN");
+          const id = idInput.value;
+          const action =
+            id && appData.leaveApplication.some((l) => l["ID DOKUMEN"] === id)
+              ? "updateLeave"
+              : "addLeave";
+
+          const data = {};
+          LEAVE_HEADERS.forEach((header) => {
+            const input = document.getElementById(
+              `form-${header.replace(/ /g, "-")}`
+            );
+            if (input) data[header] = input.value;
+          });
+          if (action === "addLeave") {
+            data["ID DOKUMEN"] = data["ID DOKUMEN"] || `LEAVE-${Date.now()}`;
+          }
+
+          try {
+            const result = await apiCall(
+              { action, id: data["ID DOKUMEN"] },
+              { method: "POST", body: JSON.stringify(data) }
+            );
+            showToast(
+              `Pengajuan cuti berhasil ${
+                action === "updateLeave" ? "diperbarui" : "ditambahkan"
+              }.`
+            );
+            fetchLeaveData();
+          } catch (error) {
+            showToast(`Proses gagal: ${error.message}`, "error");
+          } finally {
+            closeModal("leaveModal");
+          }
+        });
+
+      document
+        .getElementById("applicantForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const id = document.getElementById("applicant-id").value;
+          const action = "addApplicant";
+          const data = {
+            ID_Pelamar: id || `APP-${Date.now()}`,
+            Nama_Lengkap: document.getElementById("applicant-name").value,
+            Posisi_Dilamar: document.getElementById("applicant-position").value,
+            Email: document.getElementById("applicant-email").value,
+            No_Telepon: document.getElementById("applicant-phone").value,
+            Tanggal_Pengajuan: new Date().toLocaleDateString("en-CA"),
+          };
+          try {
+            const result = await apiCall(
+              { action, sheet: "Pelamar_Masuk" },
+              { method: "POST", body: JSON.stringify(data) }
+            );
+            showToast(`Pelamar baru berhasil ditambahkan.`);
+            fetchRecruitmentData("Pelamar_Masuk");
+          } catch (error) {
+            showToast(`Proses gagal: ${error.message}`, "error");
+          } finally {
+            closeModal("applicantModal");
+          }
+        });
+
+      document
+        .getElementById("processApplicantForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const identifier = document.getElementById(
+            "applicant-identifier"
+          ).value;
+          if (!identifier) {
+            showToast("NIK atau No. Telepon harus diisi.", "error");
+            return;
+          }
+
+          // Ensure Pelamar_Masuk data is loaded
+          if (
+            !appData.recruitment["Pelamar_Masuk"] ||
+            appData.recruitment["Pelamar_Masuk"].length === 0
+          ) {
+            await fetchRecruitmentData("Pelamar_Masuk");
+          }
+
+          const applicant = appData.recruitment["Pelamar_Masuk"].find(
+            (p) => p.NIK == identifier || p.No_Telepon == identifier
+          );
+
+          if (!applicant) {
+            showToast(
+              "Pelamar dengan NIK atau No. Telepon tersebut tidak ditemukan di data Pelamar Masuk.",
+              "error"
+            );
+            return;
+          }
+
+          const applicantId = applicant.ID_Pelamar;
+          const data = {
+            targetSheet: "Kandidat_Terpilih",
+            reason: "Diproses via Web App",
+          };
+
+          try {
+            const result = await apiCall(
+              { action: "processApplicant", id: applicantId },
+              { method: "POST", body: JSON.stringify(data) }
+            );
+            showToast(
+              `Pelamar ${applicant.Nama_Lengkap} berhasil diproses menjadi kandidat terpilih.`
+            );
+            fetchRecruitmentData("Pelamar_Masuk");
+            fetchRecruitmentData("Kandidat_Terpilih");
+          } catch (error) {
+            showToast(`Proses gagal: ${error.message}`, "error");
+          } finally {
+            closeModal("processApplicantModal");
+          }
+        });
+
+      // --- FAMILY TAB CRUD ---
+      function addFamilyRow() {
+        const tbody = document.getElementById("family-table-body");
+        document.getElementById("no-family-data")?.remove();
+        const newRow = document.createElement("tr");
+        newRow.className = "border-t";
+        newRow.setAttribute("data-is-new", "true");
+        newRow.innerHTML = `
+                <td class="p-2"><input type="text" placeholder="Nama" class="w-full bg-gray-100 p-1 rounded border"></td>
+                <td class="p-2"><input type="text" placeholder="Hubungan" class="w-full bg-gray-100 p-1 rounded border"></td>
+                <td class="p-2"><input type="date" class="w-full bg-gray-100 p-1 rounded border"></td>
+                <td class="p-2 text-center">
+                    <button onclick="saveFamilyMember(this)" class="text-green-600 p-1"><i data-lucide="save" class="w-4 h-4"></i></button>
+                    <button onclick="this.closest('tr').remove()" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </td>
+            `;
+        tbody.appendChild(newRow);
+        lucide.createIcons();
+      }
+
+      async function saveFamilyMember(button) {
+        const row = button.closest("tr");
+        const inputs = row.querySelectorAll("input");
+        const isNew = row.getAttribute("data-is-new") === "true";
+        const originalFamilyName = isNew
+          ? null
+          : row.getAttribute("data-family-name");
+
+        const data = {
+          NRP: document.getElementById("edit-nrp").value,
+          "FAMILY NAME": inputs[0].value,
+          "FAMILY RELATION CODE": inputs[1].value,
+          "BIRTH DATE": new Date(inputs[2].value).toLocaleDateString("en-CA"),
+        };
+
+        if (!data["FAMILY NAME"]) {
+          showToast("Nama keluarga tidak boleh kosong.", "error");
+          return;
+        }
+
+        const action = isNew ? "addFamily" : "updateFamily";
+        const id = isNew ? null : originalFamilyName;
+
+        try {
+          const result = await apiCall(
+            { action, id },
+            { method: "POST", body: JSON.stringify(data) }
+          );
+          showToast(
+            `Data keluarga berhasil ${isNew ? "ditambahkan" : "diperbarui"}.`
+          );
+          fetchFamilyData(data.NRP);
+        } catch (error) {
+          showToast(`Proses gagal: ${error.message}`, "error");
         }
       }
 
-      // --- Event Listeners ---
-      sidebarToggleBtn.addEventListener("click", showSidebar);
-      sidebarBackdrop.addEventListener("click", hideSidebar);
+      async function deleteFamilyMember(button) {
+        if (!confirm("Yakin ingin menghapus anggota keluarga ini?")) return;
 
-      hiringDateYearBtn.addEventListener("click", () => {
-        currentHiringDateView = "year";
-        renderKaryawanCharts();
-      });
-      hiringDateMonthBtn.addEventListener("click", () => {
-        currentHiringDateView = "month";
-        renderKaryawanCharts();
-      });
+        const row = button.closest("tr");
+        const familyName = row.getAttribute("data-family-name");
+        const nrp = document.getElementById("edit-nrp").value;
 
-      tanggalKejadianYearBtn.addEventListener("click", () => {
-        currentTanggalKejadianView = "year";
-        renderSuratPeringatanCharts();
-      });
-      tanggalKejadianMonthBtn.addEventListener("click", () => {
-        currentTanggalKejadianView = "month";
-        renderSuratPeringatanCharts();
-      });
+        if (!familyName) {
+          // For new rows that haven't been saved
+          row.remove();
+          return;
+        }
 
-      document.addEventListener("DOMContentLoaded", async () => {
-        // Fetch both datasets initially
-        await Promise.all([
-          fetchData("DATA_KARYAWAN"),
-          fetchData("REPORT_PELANGGARAN"),
-        ]);
-        showTab("karyawan"); // Show default tab after data is fetched
+        try {
+          const result = await apiCall(
+            { action: "deleteFamily", id: familyName },
+            { method: "POST" }
+          );
+          showToast("Anggota keluarga berhasil dihapus.");
+          fetchFamilyData(nrp);
+        } catch (error) {
+          showToast(`Gagal menghapus: ${error.message}`, "error");
+        }
+      }
+
+      // --- DASHBOARD CHARTS ---
+      function renderPersonalDashboardCharts() {
+        if (appData.manpower.length === 0) {
+          document.getElementById("dashboard-personal-content").innerHTML =
+            '<p class="col-span-full text-center">Memuat data untuk grafik...</p>';
+          return;
+        }
+
+        const processDataForChart = (key) => {
+          return appData.manpower.reduce((acc, curr) => {
+            const value = curr[key] || "Tidak Diketahui";
+            acc[value] = (acc[value] || 0) + 1;
+            return acc;
+          }, {});
+        };
+
+        const chartConfigs = [
+          { id: "religionChart", type: "pie", key: "RELIGION", title: "Agama" },
+          {
+            id: "maritalChart",
+            type: "doughnut",
+            key: "MARITAL STATUS",
+            title: "Status Pernikahan",
+          },
+          {
+            id: "educationChart",
+            type: "pie",
+            key: "EDUCATION",
+            title: "Pendidikan",
+          },
+          {
+            id: "departmentChart",
+            type: "bar",
+            key: "DEPARTMENT",
+            title: "Departemen",
+          },
+          {
+            id: "pohChart",
+            type: "doughnut",
+            key: "STATUS POH",
+            title: "Status POH",
+          },
+          { id: "genderChart", type: "pie", key: "GENDER", title: "Gender" },
+        ];
+
+        chartConfigs.forEach((config) => {
+          const chartData = processDataForChart(config.key);
+          const labels = Object.keys(chartData);
+          const data = Object.values(chartData);
+          const canvas = document.getElementById(config.id);
+          if (canvas) {
+            if (charts[config.id]) charts[config.id].destroy();
+            charts[config.id] = new Chart(canvas, {
+              type: config.type,
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    label: config.title,
+                    data: data,
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: "bottom" } },
+              },
+            });
+          }
+        });
+      }
+
+      function renderRecruitmentDashboardCharts() {
+        const labels = [
+          "Pelamar Masuk",
+          "Proses Pelamar",
+          "Kandidat Terpilih",
+          "Pelamar Final",
+        ];
+        const data = labels.map(
+          (label) => appData.recruitment[label.replace(/ /g, "_")]?.length || 0
+        );
+        const canvas = document.getElementById("recruitmentFunnelChart");
+        if (canvas) {
+          if (charts.recruitmentFunnel) charts.recruitmentFunnel.destroy();
+          charts.recruitmentFunnel = new Chart(canvas, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [
+                {
+                  label: "Jumlah Kandidat per Tahap",
+                  data: data,
+                  backgroundColor: ["#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8"],
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              indexAxis: "y",
+              plugins: { legend: { display: false } },
+            },
+          });
+        }
+      }
+
+      function renderSPDashboardCharts() {
+        const spBySanksiData = appData.suratPeringatan.reduce((acc, curr) => {
+          const sanksi = curr["SANKSI"] || "Lainnya";
+          acc[sanksi] = (acc[sanksi] || 0) + 1;
+          return acc;
+        }, {});
+        const spByDeptData = appData.suratPeringatan.reduce((acc, curr) => {
+          const dept = curr["DEPARTMENT"] || "Tidak Diketahui";
+          acc[dept] = (acc[dept] || 0) + 1;
+          return acc;
+        }, {});
+
+        const sanksiCanvas = document.getElementById("spBySanksiChart");
+        if (sanksiCanvas) {
+          if (charts.spBySanksi) charts.spBySanksi.destroy();
+          charts.spBySanksi = new Chart(sanksiCanvas, {
+            type: "doughnut",
+            data: {
+              labels: Object.keys(spBySanksiData),
+              datasets: [{ data: Object.values(spBySanksiData) }],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { position: "right" } },
+            },
+          });
+        }
+
+        const deptCanvas = document.getElementById("spByDeptChart");
+        if (deptCanvas) {
+          if (charts.spByDept) charts.spByDept.destroy();
+          charts.spByDept = new Chart(deptCanvas, {
+            type: "bar",
+            data: {
+              labels: Object.keys(spByDeptData),
+              datasets: [
+                { label: "Jumlah SP", data: Object.values(spByDeptData) },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+            },
+          });
+        }
+      }
+
+      // --- INITIAL LOAD ---
+      document.addEventListener("DOMContentLoaded", () => {
+        const sidebar = document.getElementById("sidebar");
+        const body = document.body;
+        sidebar.addEventListener("mouseenter", () =>
+          body.classList.add("sidebar-expanded")
+        );
+        sidebar.addEventListener("mouseleave", () =>
+          body.classList.remove("sidebar-expanded")
+        );
+        showPage("dashboard");
+        lucide.createIcons();
       });
     </script>
   </body>
