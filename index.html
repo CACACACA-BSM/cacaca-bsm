@@ -883,6 +883,51 @@
       </div>
     </div>
 
+    <div
+      id="recruitmentEditModal"
+      class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-3/4 lg:w-2/3 z-50 hidden"
+    >
+      <div class="p-5 border-b flex justify-between items-center">
+        <h3 id="recruitment-edit-modal-title" class="text-xl font-semibold">
+          Edit Data Pelamar
+        </h3>
+        <button
+          onclick="closeModal('recruitmentEditModal')"
+          class="text-gray-500 hover:text-gray-800"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="p-5 max-h-[70vh] overflow-y-auto">
+        <form id="recruitmentEditForm">
+          <input type="hidden" id="edit-applicant-id" />
+          <input type="hidden" id="edit-applicant-sheet" />
+
+          <div
+            id="recruitment-edit-form-fields"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
+          ></div>
+        </form>
+      </div>
+      <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <button
+          type="button"
+          onclick="closeModal('recruitmentEditModal')"
+          class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
+        >
+          Batal
+        </button>
+        <button
+          id="recruitment-edit-submit-btn"
+          type="submit"
+          form="recruitmentEditForm"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+        >
+          Simpan Perubahan
+        </button>
+      </div>
+    </div>
+
     <div id="toast-notification" class="toast"></div>
     <script src="script.js"></script>
   </body>

@@ -99,6 +99,111 @@ const LEAVE_HEADERS = [
   "TANGGAL CONFIRMED",
 ];
 
+const fieldConfigurations = {
+  // === UMUM & BERULANG DI BANYAK SHEET ===
+  Tanggal_Pengajuan: { type: "date" },
+  Tanggal_Terpilih: { type: "date" },
+  Tanggal_Tersisih: { type: "date" },
+  Tanggal_Permintaan: { type: "date" },
+  Tanggal_Posting: { type: "date" },
+  Tenggat_Waktu: { type: "date" },
+  Join_Date: { type: "date" },
+
+  // === SHEET: Pelamar_Masuk ===
+  Sumber_Pengajuan: {
+    type: "dropdown",
+    options: [
+      "",
+      "Website Karir",
+      "Jobstreet",
+      "LinkedIn",
+      "Rekomendasi Internal",
+      "Walk-in",
+      "Lainnya",
+    ],
+  },
+
+  // === SHEET: Kandidat_Terpilih ===
+  Status_Terpilih: {
+    type: "dropdown",
+    options: ["", "Lolos", "Cadangan", "Pending"],
+  },
+  Alasan_Terpilih: { type: "textarea" },
+
+  // === SHEET: Proses_Pelamar ===
+  Jadwal_Interview_HR: { type: "datetime-local" },
+  Hasil_Interview_HR: {
+    type: "dropdown",
+    options: ["", "Lolos", "Dipertimbangkan", "Tidak Lolos", "Cadangan"],
+  },
+  Catatan_HR: { type: "textarea" },
+  Jadwal_Interview_User1: { type: "datetime-local" },
+  Hasil_Interview_User1: {
+    type: "dropdown",
+    options: ["", "Lolos", "Dipertimbangkan", "Tidak Lolos", "Cadangan"],
+  },
+  Jadwal_Interview_User2: { type: "datetime-local" },
+  Hasil_Interview_User2: {
+    type: "dropdown",
+    options: ["", "Lolos", "Dipertimbangkan", "Tidak Lolos", "Cadangan"],
+  },
+  Hasil_Akhir: {
+    type: "dropdown",
+    options: [
+      "",
+      "Direkomendasikan",
+      "Tidak Direkomendasikan",
+      "Butuh Diskusi Lanjut",
+    ],
+  },
+
+  // === SHEET: Proses_Lanjutan ===
+  Jadwal_MCU: { type: "date" },
+  Hasil_MCU: {
+    type: "dropdown",
+    options: ["", "Fit", "Fit with note", "Unfit"],
+  },
+
+  // === SHEET: Proses_Insite ===
+  Jadwal_Insite: { type: "datetime-local" },
+  Jadwal_Test_Praktek: { type: "datetime-local" },
+  Hasil_Test_Praktek: {
+    type: "dropdown",
+    options: ["", "Kompeten", "Belum Kompeten", "Perlu Pengembangan"],
+  },
+
+  // === SHEET: Pelamar_Tersisih ===
+  Alasan_Tersisih: { type: "textarea" },
+  Catatan: { type: "textarea" },
+
+  // === SHEET: PTK_Permintaan_Tenaga_Kerja ===
+  Unit_Bagian: {
+    type: "dropdown",
+    options: ["", "Produksi", "HRGA", "Finance", "Engineering", "Safety", "IT"],
+  },
+  Status_Permintaan: {
+    type: "dropdown",
+    options: [
+      "",
+      "Diajukan",
+      "Disetujui",
+      "Ditolak",
+      "Diproses",
+      "Selesai",
+      "Ditunda",
+    ],
+  },
+  Alasan_Tertunda: { type: "textarea" },
+
+  // === SHEET: Job_Posting ===
+  Deskripsi_Pekerjaan: { type: "textarea" },
+  Persyaratan: { type: "textarea" },
+  Status_Posting: {
+    type: "dropdown",
+    options: ["", "Aktif", "Ditutup", "Ditunda"],
+  },
+};
+
 // --- GLOBAL STATE ---
 let appData = {
   manpower: [],
@@ -553,9 +658,14 @@ function renderRecruitmentTabPage(sheetName) {
     return;
   }
   const headers = Object.keys(data[0] || {});
-  thead.innerHTML = `<tr><th class="p-3 font-semibold w-12 text-center"><input type="checkbox" onchange="toggleSelectAll(this, '${sheetName}')" class="rounded border-gray-300"></th>${headers
-    .map((h) => `<th class="p-3 font-semibold">${h.replace(/_/g, " ")}</th>`)
-    .join("")}</tr>`;
+  thead.innerHTML = `<tr> <th class="p-3 font-semibold w-12 text-center"><input type="checkbox" onchange="toggleSelectAll(this, '${sheetName}')" class="rounded border-gray-300"></th>
+      ${headers
+        .map(
+          (h) => `<th class="p-3 font-semibold">${h.replace(/_/g, " ")}</th>`
+        )
+        .join("")}
+      <th class="p-3 font-semibold text-center">Aksi</th>
+    </tr>`;
   if (paginatedData.length === 0) {
     tbody.innerHTML = `<tr><td colspan="${
       headers.length + 1
@@ -569,13 +679,19 @@ function renderRecruitmentTabPage(sheetName) {
         return `<tr class="border-b hover:bg-indigo-50 ${
           isSelected ? "bg-indigo-100" : ""
         }">
-      <td class="p-3 text-center">
-        <input type="checkbox" onchange="toggleApplicantSelection(this, '${sheetName}', '${applicantId}')" class="rounded border-gray-300" ${
+              <td class="p-3 text-center">
+                <input type="checkbox" onchange="toggleApplicantSelection(this, '${sheetName}', '${applicantId}')" class="rounded border-gray-300" ${
           isSelected ? "checked" : ""
         } data-applicant-id="${applicantId}">
-      </td>
-      ${headers.map((h) => `<td class="p-3">${row[h] || ""}</td>`).join("")}
-    </tr>`;
+              </td>
+              ${headers
+                .map((h) => `<td class="p-3">${row[h] || ""}</td>`)
+                .join("")}
+              <td class="p-3 text-center">
+                  <button onclick="openRecruitmentEditModal('${sheetName}', '${applicantId}')" class="text-blue-600 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                  <button onclick="confirmDeleteApplicant('${sheetName}', '${applicantId}')" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </td>
+            </tr>`;
       })
       .join("");
   }
@@ -613,6 +729,49 @@ function renderRecruitmentPagination(sheetName, totalRows) {
     currentPage === totalPages ? "disabled" : ""
   }>Berikutnya</button>
         </div>`;
+}
+
+function openRecruitmentEditModal(sheetName, applicantId) {
+  const applicantData = appData.recruitment[sheetName]?.find(
+    (p) => p.ID_Pelamar == applicantId
+  );
+  if (!applicantData) {
+    showToast("Data pelamar tidak ditemukan.", "error");
+    return;
+  }
+
+  // Simpan info penting di hidden input
+  document.getElementById("edit-applicant-id").value = applicantId;
+  document.getElementById("edit-applicant-sheet").value = sheetName;
+
+  // Ambil semua header dari data pertama sebagai referensi
+  const headers = Object.keys(appData.recruitment[sheetName][0] || {});
+
+  // Gunakan kembali fungsi generateFormFields yang sudah ada!
+  generateFormFields("recruitment-edit-form-fields", headers, applicantData);
+
+  openModal("recruitmentEditModal");
+}
+
+function confirmDeleteApplicant(sheetName, applicantId) {
+  openModal("confirmDeleteModal");
+  const btn = document.getElementById("confirm-delete-btn");
+  btn.onclick = async () => {
+    try {
+      await apiCall(
+        { action: "deleteApplicant", sheet: sheetName, id: applicantId },
+        { method: "POST" }
+      );
+      showToast("Data pelamar berhasil dihapus.");
+      // Hapus cache dan muat ulang data
+      delete appData.recruitment[sheetName];
+      showRecruitmentTab(sheetName);
+    } catch (error) {
+      showToast(`Gagal menghapus: ${error.message}`, "error");
+    } finally {
+      closeModal("confirmDeleteModal");
+    }
+  };
 }
 
 function changeRecruitmentPage(sheetName, newPage) {
@@ -870,19 +1029,74 @@ function renderActivityLogTable() {
 }
 
 // --- CRUD OPERATIONS ---
+// GANTI FUNGSI generateFormFields LAMA DENGAN VERSI BARU INI
+
 function generateFormFields(containerId, headers, data = {}) {
   const container = document.getElementById(containerId);
   if (!container) return;
+
   container.innerHTML = headers
-    .map(
-      (header) => `
-    <div>
-        <label class="block text-sm font-medium text-gray-500">${header}</label>
-        <input type="text" id="form-${header.replace(/ /g, "-")}" value="${
-        data[header] || ""
-      }" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">
-    </div>`
-    )
+    .map((header) => {
+      const config = fieldConfigurations[header];
+      const value = data[header] || "";
+      let fieldHtml = "";
+      const fieldId = `form-${header.replace(/ /g, "-")}`;
+
+      // Cek apakah ada konfigurasi khusus untuk header ini
+      if (config) {
+        if (config.type === "dropdown") {
+          // --- Buat Dropdown ---
+          const optionsHtml = config.options
+            .map((option) => {
+              const isSelected = option == value ? "selected" : ""; // Gunakan '==' untuk perbandingan longgar
+              return `<option value="${option}" ${isSelected}>${option}</option>`;
+            })
+            .join("");
+
+          fieldHtml = `<select id="${fieldId}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">${optionsHtml}</select>`;
+        } else if (config.type === "date" || config.type === "datetime-local") {
+          // --- Buat Input Tanggal atau Tanggal-Waktu ---
+          let formattedValue = "";
+          if (value) {
+            try {
+              const date = new Date(value);
+              if (!isNaN(date)) {
+                // Cek apakah tanggal valid
+                if (config.type === "date") {
+                  formattedValue = date.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+                } else {
+                  // datetime-local
+                  const pad = (num) => num.toString().padStart(2, "0");
+                  formattedValue = `${date.getFullYear()}-${pad(
+                    date.getMonth() + 1
+                  )}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(
+                    date.getMinutes()
+                  )}`; // Format: YYYY-MM-DDTHH:mm
+                }
+              }
+            } catch (e) {
+              console.warn(
+                `Tidak bisa format tanggal untuk ${header}: ${value}`
+              );
+            }
+          }
+          fieldHtml = `<input type="${config.type}" id="${fieldId}" value="${formattedValue}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">`;
+        } else if (config.type === "textarea") {
+          // --- Buat Textarea --- (KEMAMPUAN BARU)
+          fieldHtml = `<textarea id="${fieldId}" rows="4" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">${value}</textarea>`;
+        }
+      }
+
+      // Jika tidak ada konfigurasi ATAU tipe tidak cocok, gunakan input teks biasa
+      if (!fieldHtml) {
+        fieldHtml = `<input type="text" id="${fieldId}" value="${value}" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">`;
+      }
+
+      return `<div>
+              <label class="block text-sm font-medium text-gray-500">${header}</label>
+              ${fieldHtml}
+            </div>`;
+    })
     .join("");
 }
 
@@ -1511,5 +1725,40 @@ document.addEventListener("DOMContentLoaded", () => {
       state.searchTerm = e.target.value.toLowerCase();
       state.currentPage = 1;
       renderRecruitmentTabPage(activeRecruitmentSheet);
+    });
+
+  document
+    .getElementById("recruitmentEditForm")
+    .addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const applicantId = document.getElementById("edit-applicant-id").value;
+      const sheetName = document.getElementById("edit-applicant-sheet").value;
+
+      const headers = Object.keys(appData.recruitment[sheetName][0] || {});
+      const updatedData = {};
+      headers.forEach((header) => {
+        const input = document.getElementById(
+          `form-${header.replace(/ /g, "-")}`
+        );
+        if (input) {
+          updatedData[header] = input.value;
+        }
+      });
+
+      try {
+        await apiCall(
+          { action: "updateApplicant", sheet: sheetName, id: applicantId },
+          { method: "POST", body: JSON.stringify(updatedData) }
+        );
+        showToast("Data pelamar berhasil diperbarui.");
+        // Hapus cache dan muat ulang data
+        delete appData.recruitment[sheetName];
+        showRecruitmentTab(sheetName);
+      } catch (error) {
+        showToast(`Gagal memperbarui: ${error.message}`, "error");
+      } finally {
+        closeModal("recruitmentEditModal");
+      }
     });
 });
