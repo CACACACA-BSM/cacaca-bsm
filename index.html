@@ -3,154 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HRIS Dashboard</title>
+    <title>ACA Web</title>
 
-    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #f1f5f9; /* slate-100 */
-      }
-      .active-nav {
-        background-color: #3b82f6; /* blue-500 */
-        color: white;
-      }
-      .sidebar-link:hover {
-        background-color: #f1f5f9; /* slate-100 */
-      }
-      .active-nav:hover {
-        background-color: #2563eb; /* blue-600 */
-      }
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      ::-webkit-scrollbar-track {
-        background: #e2e8f0;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #94a3b8;
-        border-radius: 10px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #64748b;
-      }
-      .chart-card {
-        background-color: white;
-        padding: 1.5rem;
-        border-radius: 0.75rem;
-        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1),
-          0 1px 2px -1px rgb(0 0 0 / 0.1);
-      }
-      .dashboard-tab.active {
-        border-bottom: 2px solid #3b82f6;
-        color: #3b82f6;
-        font-weight: 600;
-      }
-      .dashboard-tab {
-        border-bottom: 2px solid transparent;
-        color: #64748b;
-      }
-      .recruitment-tab-active {
-        background-color: #3b82f6;
-        color: white;
-      }
-      .recruitment-tab-inactive {
-        background-color: #eef2ff;
-        color: #4f46e5;
-      }
-      .detail-tab-active {
-        border-bottom-color: #3b82f6;
-        color: #3b82f6;
-      }
-      .loader {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #3498db;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* --- Sidebar Hover Styles --- */
-      #sidebar {
-        width: 5rem; /* w-20 */
-        transition: width 0.3s ease-in-out;
-      }
-      #main-content {
-        margin-left: 5rem; /* w-20 */
-        transition: margin-left 0.3s ease-in-out;
-      }
-      .nav-text,
-      .logo-text,
-      .user-info {
-        display: none;
-        opacity: 0;
-        transition: opacity 0.2s ease-in-out;
-      }
-
-      body.sidebar-expanded #sidebar {
-        width: 16rem; /* w-64 */
-      }
-      body.sidebar-expanded #main-content {
-        margin-left: 16rem; /* w-64 */
-      }
-      body.sidebar-expanded .nav-text,
-      body.sidebar-expanded .logo-text,
-      body.sidebar-expanded .user-info {
-        display: inline-block;
-        opacity: 1;
-      }
-      body.sidebar-expanded .logo-container {
-        justify-content: center;
-      }
-      .logo-container {
-        justify-content: center;
-      }
-      .toast {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        padding: 1rem 1.5rem;
-        border-radius: 0.5rem;
-        color: white;
-        z-index: 100;
-        opacity: 0;
-        transition: opacity 0.5s, transform 0.5s;
-        transform: translateY(20px);
-      }
-      .toast.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .toast.success {
-        background-color: #22c55e;
-      }
-      .toast.error {
-        background-color: #ef4444;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body class="flex h-screen overflow-hidden text-gray-800">
-    <!-- Sidebar -->
     <aside
       id="sidebar"
       class="bg-white text-gray-600 flex-shrink-0 flex flex-col z-20"
@@ -216,9 +81,7 @@
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <div id="main-content" class="flex-1 flex flex-col overflow-hidden">
-      <!-- Header -->
       <header
         class="h-20 flex items-center justify-between px-8 bg-white border-b"
       >
@@ -248,28 +111,33 @@
         </div>
       </header>
 
-      <!-- Page Content -->
       <main class="flex-1 overflow-x-hidden overflow-y-auto p-8">
-        <!-- Dashboard Page -->
         <div id="dashboard-page" class="page">
-          <div class="flex border-b mb-6">
+          <div class="flex items-center gap-2 mb-6">
+            <span class="text-sm font-semibold text-gray-600">Periode:</span>
             <button
-              onclick="switchDashboardTab('personal')"
-              class="dashboard-tab active flex items-center gap-2 py-3 px-4"
+              onclick="setDashboardDateRange('this_month')"
+              class="date-filter-btn bg-white text-sm px-3 py-1 rounded-md border"
             >
-              <i data-lucide="user-circle"></i> Personal
+              Bulan Ini
             </button>
             <button
-              onclick="switchDashboardTab('rekrutmen')"
-              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+              onclick="setDashboardDateRange('last_3_months')"
+              class="date-filter-btn bg-white text-sm px-3 py-1 rounded-md border"
             >
-              <i data-lucide="users"></i> Rekrutmen
+              3 Bulan Terakhir
             </button>
             <button
-              onclick="switchDashboardTab('sp')"
-              class="dashboard-tab flex items-center gap-2 py-3 px-4"
+              onclick="setDashboardDateRange('this_year')"
+              class="date-filter-btn bg-white text-sm px-3 py-1 rounded-md border"
             >
-              <i data-lucide="file-warning"></i> Surat Peringatan
+              Tahun Ini
+            </button>
+            <button
+              onclick="setDashboardDateRange('all_time')"
+              class="date-filter-btn bg-blue-500 text-white text-sm px-3 py-1 rounded-md border border-blue-500"
+            >
+              Semua Waktu
             </button>
           </div>
 
@@ -344,12 +212,17 @@
           </div>
         </div>
 
-        <!-- Manpower Page -->
         <div id="manpower-page" class="page hidden">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold">All Personel</h2>
               <div class="flex items-center gap-4">
+                <button
+                  id="export-manpower-btn"
+                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center text-sm font-semibold"
+                >
+                  <i data-lucide="file-down" class="w-5 h-5 mr-2"></i> Export
+                </button>
                 <button
                   onclick="openAddEmployeeModal()"
                   class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center text-sm font-semibold"
@@ -358,6 +231,37 @@
                 </button>
               </div>
             </div>
+
+            <div class="flex items-center space-x-4 mb-4">
+              <div class="flex-grow">
+                <label for="manpower-search-input" class="sr-only"
+                  >Cari Karyawan</label
+                >
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                  </div>
+                  <input
+                    type="text"
+                    id="manpower-search-input"
+                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Cari berdasarkan NRP, Nama, Posisi..."
+                  />
+                </div>
+              </div>
+              <div>
+                <label for="manpower-filter-dept" class="sr-only"
+                  >Filter Departemen</label
+                >
+                <select
+                  id="manpower-filter-dept"
+                  class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                ></select>
+              </div>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="w-full text-sm text-left">
                 <thead class="text-gray-500 bg-gray-50">
@@ -374,10 +278,14 @@
                 <tbody id="manpower-table-body"></tbody>
               </table>
             </div>
+
+            <div
+              id="manpower-pagination-controls"
+              class="flex items-center justify-between mt-4 text-sm"
+            ></div>
           </div>
         </div>
 
-        <!-- Surat Peringatan Page -->
         <div id="surat_peringatan-page" class="page hidden">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <h3 class="font-bold text-lg mb-4">Searching Form</h3>
@@ -426,7 +334,6 @@
           </div>
         </div>
 
-        <!-- Leave Application Page -->
         <div id="leave_application-page" class="page hidden">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <div class="flex justify-between items-center mb-4">
@@ -457,18 +364,25 @@
           </div>
         </div>
 
-        <!-- Recruitment Page -->
         <div id="recruitment-page" class="page hidden">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <div class="flex justify-between items-center mb-4">
               <h2 class="text-xl font-bold">Pengelolaan Data Rekrutmen</h2>
               <div class="flex items-center gap-4">
                 <button
-                  onclick="openProcessApplicantModal()"
+                  id="export-recruitment-btn"
                   class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center text-sm font-semibold"
                 >
-                  <i data-lucide="user-check" class="w-5 h-5 mr-2"></i> Proses
-                  Kandidat
+                  <i data-lucide="file-down" class="w-5 h-5 mr-2"></i> Export
+                </button>
+                <button
+                  id="process-selected-applicant-btn"
+                  onclick="openRecruitmentProcessModal()"
+                  class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 flex items-center text-sm font-semibold"
+                  disabled
+                >
+                  <i data-lucide="user-check" class="w-5 h-5 mr-2"></i>
+                  <span>Proses Kandidat</span>
                 </button>
                 <button
                   onclick="openAddApplicantModal()"
@@ -540,6 +454,23 @@
                 Job Posting
               </button>
             </div>
+
+            <div class="mb-4">
+              <div class="relative">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                </div>
+                <input
+                  type="text"
+                  id="recruitment-search-input"
+                  class="block w-full md:w-1/3 pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  placeholder="Cari di semua kolom..."
+                />
+              </div>
+            </div>
+
             <div id="recruitment-tab-content" class="overflow-x-auto">
               <table class="w-full text-sm text-left">
                 <thead
@@ -549,10 +480,14 @@
                 <tbody id="recruitment-table-body"></tbody>
               </table>
             </div>
+
+            <div
+              id="recruitment-pagination-controls"
+              class="flex items-center justify-between mt-4 text-sm"
+            ></div>
           </div>
         </div>
 
-        <!-- Activity Log Page -->
         <div id="activity_log-page" class="page hidden">
           <div class="bg-white p-6 rounded-xl shadow-sm">
             <h2 class="text-xl font-bold mb-4">Activity Log</h2>
@@ -575,7 +510,6 @@
       </main>
     </div>
 
-    <!-- Modals -->
     <div
       id="modal-backdrop"
       class="fixed inset-0 bg-black/50 z-40 hidden"
@@ -621,9 +555,7 @@
             <div
               id="employee-form-fields"
               class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
-            >
-              <!-- All 46 fields will be generated by JS -->
-            </div>
+            ></div>
           </form>
         </div>
         <div id="family-data-content" class="detail-tab-content py-6 hidden">
@@ -686,9 +618,7 @@
           <div
             id="sp-form-fields"
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
-          >
-            <!-- SP form fields will be generated here -->
-          </div>
+          ></div>
         </form>
       </div>
       <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
@@ -727,9 +657,7 @@
           <div
             id="leave-form-fields"
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4"
-          >
-            <!-- Leave form fields will be generated here -->
-          </div>
+          ></div>
         </form>
       </div>
       <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
@@ -836,47 +764,66 @@
     </div>
 
     <div
-      id="processApplicantModal"
+      id="recruitmentProcessModal"
       class="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl w-11/12 md:w-1/3 z-50 hidden"
     >
       <div class="p-5 border-b flex justify-between items-center">
-        <h3 class="text-xl font-semibold">Proses Kandidat Terpilih</h3>
+        <h3 class="text-xl font-semibold">Proses Kandidat</h3>
         <button
-          onclick="closeModal('processApplicantModal')"
+          onclick="closeModal('recruitmentProcessModal')"
           class="text-gray-500 hover:text-gray-800"
         >
           <i data-lucide="x" class="w-6 h-6"></i>
         </button>
       </div>
-      <form id="processApplicantForm" class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
+        <p>Anda akan memproses kandidat:</p>
+        <p
+          id="selected-candidate-info"
+          class="font-bold text-lg text-blue-600"
+        ></p>
+
+        <input type="hidden" id="selected-candidate-id" />
+        <input type="hidden" id="selected-candidate-source-sheet" />
+
         <div>
           <label
-            for="applicant-identifier"
+            for="target-sheet-select"
             class="block text-sm font-medium text-gray-700"
-            >Masukkan NIK atau No. Telepon Pelamar</label
+            >Pindahkan ke Tahap:</label
           >
-          <input
-            type="text"
-            id="applicant-identifier"
-            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2"
-            placeholder="NIK atau No. Telepon"
-          />
+          <select
+            id="target-sheet-select"
+            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+          ></select>
         </div>
-      </form>
+        <div>
+          <label
+            for="processing-notes"
+            class="block text-sm font-medium text-gray-700"
+            >Catatan (Alasan):</label
+          >
+          <textarea
+            id="processing-notes"
+            rows="3"
+            class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+          ></textarea>
+        </div>
+      </div>
       <div class="px-5 py-4 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
         <button
           type="button"
-          onclick="closeModal('processApplicantModal')"
+          onclick="closeModal('recruitmentProcessModal')"
           class="bg-white text-gray-700 px-4 py-2 rounded-lg border"
         >
-          Batal</button
-        ><button
-          id="process-applicant-submit-btn"
-          type="submit"
-          form="processApplicantForm"
+          Batal
+        </button>
+        <button
+          id="recruitment-process-submit-btn"
+          onclick="submitApplicantProcessing()"
           class="bg-green-600 text-white px-4 py-2 rounded-lg"
         >
-          Proses
+          Ya, Proses
         </button>
       </div>
     </div>
@@ -913,1181 +860,6 @@
     </div>
 
     <div id="toast-notification" class="toast"></div>
-
-    <script>
-      // --- CONFIGURATION ---
-      const WEB_APP_URL =
-        "https://script.google.com/macros/s/AKfycbxn-a_yqBukHWBvrQsDs937DHt_sAJ72rR5WXOuXOnTmF_rILrsIegiY62707pOeKl8uA/exec";
-      const MANPOWER_HEADERS = [
-        "NRP",
-        "NAME",
-        "GENDER",
-        "COMPANY",
-        "MARITAL STATUS",
-        "RELIGION",
-        "DEPARTMENT",
-        "SECTION",
-        "POSITION",
-        "GRADE",
-        "PLACE OF BIRTH",
-        "DATE OF BIRTH",
-        "EDUCATION",
-        "MESS",
-        "POH",
-        "HIRING DATE",
-        "EMAIL",
-        "PHONE NUMBER",
-        "EMERGENCY NUMBER",
-        "KTP NUMBER",
-        "NPWP",
-        "ACCOUNT NUMBER",
-        "BANK NAME",
-        "ACCOUNT HOLDER NAME",
-        "LEAVE PERIOD",
-        "STATUS POH",
-        "ADDRESS",
-        "VILLAGE",
-        "SUB-DISTRICT",
-        "CITY",
-        "PROVINCE",
-        "INSURANCE PREMIUM",
-        "DAR",
-        "UDL",
-        "BLOOD TYPE",
-        "BPJS EMPLOYMENT",
-        "BPJS HEALTH",
-        "PRIVATE INSURANCE",
-        "INSURANCE PROVIDER",
-        "MCU EXPIRATION",
-        "SHIRT SIZE",
-        "PANTS SIZE",
-        "SHOE SIZE",
-        "KTP FAMILY NUMBER",
-        "SUPERVISOR NRP",
-        "STATUS",
-      ];
-      const SP_HEADERS = [
-        "ID DOKUMEN",
-        "NRP",
-        "NAME",
-        "COMPANY",
-        "DEPARTMENT",
-        "POSITION",
-        "TANGGAL KEJADIAN",
-        "WAKTU KEJADIAN",
-        "SANKSI",
-        "JENIS",
-        "LOKASI",
-        "URAIAN",
-        "MINEPERMIT",
-        "SIMPER",
-        "MASA GROUNDED",
-        "JADWAL GROUNDED",
-        "JADWAL DIRUMAHKAN",
-        "STATUS",
-        "DIBUAT OLEH",
-        "PADA TANGGAL",
-      ];
-      const LEAVE_HEADERS = [
-        "NRP",
-        "STATUS",
-        "ID DOKUMEN",
-        "TANGGAL PENGAJUAN",
-        "CUTI ISTIRAHAT",
-        "CUTI BESAR",
-        "CUTI SEMINAR",
-        "CUTI TAHUNAN",
-        "CUTI LAPANGAN",
-        "NAMA PEKERJA",
-        "DEPT",
-        "JABATAN",
-        "POSISI",
-        "CATATAN",
-        "ATASAN",
-        "POH",
-        "TANGGAL BERANGKAT",
-        "TANGGAL KEMBALI",
-        "PERUSAHAAN",
-        "TANGGAL APPROVED",
-        "TANGGAL CONFIRMED",
-      ];
-
-      // --- GLOBAL STATE ---
-      let appData = {
-        manpower: [],
-        suratPeringatan: [],
-        leaveApplication: [],
-        recruitment: {},
-        activityLog: [],
-      };
-      let charts = {};
-
-      // --- UTILITIES ---
-      function showToast(message, type = "success") {
-        const toast = document.getElementById("toast-notification");
-        toast.textContent = message;
-        toast.className = `toast show ${type}`;
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 3000);
-      }
-
-      // --- PAGE & TAB NAVIGATION ---
-      const pageTitle = document.getElementById("page-title");
-      function showPage(pageId) {
-        document
-          .querySelectorAll(".page")
-          .forEach((page) => page.classList.add("hidden"));
-        document.getElementById(pageId + "-page").classList.remove("hidden");
-
-        document.querySelectorAll(".nav-link").forEach((link) => {
-          link.classList.remove("active-nav");
-          link.classList.add("sidebar-link");
-        });
-        const activeLink = document.querySelector(
-          `.nav-link[onclick="showPage('${pageId}')"]`
-        );
-        activeLink.classList.add("active-nav");
-        activeLink.classList.remove("sidebar-link");
-
-        const titleText = activeLink.querySelector(".nav-text").textContent;
-        pageTitle.textContent = titleText;
-
-        // Fetch data if the page is being shown
-        if (pageId === "dashboard") {
-          switchDashboardTab("personal");
-        }
-        if (pageId === "manpower" && appData.manpower.length === 0)
-          fetchManpowerData();
-        if (
-          pageId === "surat_peringatan" &&
-          appData.suratPeringatan.length === 0
-        )
-          fetchSPData();
-        if (
-          pageId === "leave_application" &&
-          appData.leaveApplication.length === 0
-        )
-          fetchLeaveData();
-        if (
-          pageId === "recruitment" &&
-          Object.keys(appData.recruitment).length === 0
-        )
-          showRecruitmentTab("Pelamar_Masuk");
-        if (pageId === "activity_log" && appData.activityLog.length === 0)
-          fetchActivityLog();
-      }
-
-      function switchDashboardTab(tabId) {
-        document
-          .querySelectorAll(".dashboard-content")
-          .forEach((c) => c.classList.add("hidden"));
-        document
-          .getElementById(`dashboard-${tabId}-content`)
-          .classList.remove("hidden");
-
-        document.querySelectorAll(".dashboard-tab").forEach((t) => {
-          t.classList.remove("active");
-          if (t.getAttribute("onclick").includes(tabId))
-            t.classList.add("active");
-        });
-
-        if (tabId === "personal") {
-          if (appData.manpower.length === 0)
-            fetchManpowerData().then(renderPersonalDashboardCharts);
-          else renderPersonalDashboardCharts();
-        }
-        if (tabId === "rekrutmen") {
-          if (Object.keys(appData.recruitment).length === 0)
-            fetchAllRecruitmentData().then(renderRecruitmentDashboardCharts);
-          else renderRecruitmentDashboardCharts();
-        }
-        if (tabId === "sp") {
-          if (appData.suratPeringatan.length === 0)
-            fetchSPData().then(renderSPDashboardCharts);
-          else renderSPDashboardCharts();
-        }
-      }
-
-      function showRecruitmentTab(sheetName) {
-        if (!appData.recruitment[sheetName]) {
-          fetchRecruitmentData(sheetName);
-        } else {
-          renderRecruitmentTable(sheetName);
-        }
-        document.querySelectorAll(".recruitment-tab").forEach((tab) => {
-          tab.classList.remove(
-            "recruitment-tab-active",
-            "recruitment-tab-inactive"
-          );
-          tab.classList.add(
-            tab.getAttribute("onclick").includes(sheetName)
-              ? "recruitment-tab-active"
-              : "recruitment-tab-inactive"
-          );
-        });
-      }
-
-      function switchDetailTab(event, tabId) {
-        event.preventDefault();
-        document
-          .querySelectorAll(".detail-tab-content")
-          .forEach((c) => c.classList.add("hidden"));
-        document.getElementById(tabId + "-content").classList.remove("hidden");
-        document.querySelectorAll(".detail-tab").forEach((t) => {
-          t.classList.remove("detail-tab-active", "text-gray-500");
-          if (t.getAttribute("onclick").includes(tabId)) {
-            t.classList.add("detail-tab-active");
-          } else {
-            t.classList.add("text-gray-500");
-          }
-        });
-        if (tabId === "family-data") {
-          const nrp = document.getElementById("edit-nrp").value;
-          fetchFamilyData(nrp);
-        }
-      }
-
-      // --- MODAL LOGIC ---
-      const modalBackdrop = document.getElementById("modal-backdrop");
-      function openModal(modalId) {
-        document.getElementById(modalId)?.classList.remove("hidden");
-        modalBackdrop.classList.remove("hidden");
-      }
-      function closeModal(modalId) {
-        document.getElementById(modalId)?.classList.add("hidden");
-        modalBackdrop.classList.add("hidden");
-      }
-      modalBackdrop.addEventListener(
-        "click",
-        () =>
-          document
-            .querySelectorAll(".modal")
-            .forEach((m) => m.classList.add("hidden")) ||
-          modalBackdrop.classList.add("hidden")
-      );
-
-      // --- DATA FETCHING ---
-      function showLoader(tbodyId) {
-        const tbody = document.getElementById(tbodyId);
-        if (tbody)
-          tbody.innerHTML = `<tr><td colspan="100%" class="text-center p-8"><div class="loader mx-auto"></div></td></tr>`;
-      }
-
-      async function apiCall(params, options = {}) {
-        const url = new URL(WEB_APP_URL);
-        Object.keys(params).forEach((key) =>
-          url.searchParams.append(key, params[key])
-        );
-
-        try {
-          const response = await fetch(url, options);
-          if (
-            response.type === "opaque" ||
-            (response.redirected && options.method === "POST")
-          ) {
-            return { success: true };
-          }
-          if (!response.ok)
-            throw new Error(
-              `Network response was not ok: ${response.statusText}`
-            );
-          return response.json();
-        } catch (error) {
-          if (options.method === "POST" && error.name === "TypeError") {
-            return { success: true };
-          }
-          throw error;
-        }
-      }
-
-      async function fetchManpowerData() {
-        showLoader("manpower-table-body");
-        try {
-          const result = await apiCall({ action: "getManpowerData" });
-          if (result.success) {
-            appData.manpower = result.data;
-            renderManpowerTable();
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "manpower-table-body"
-          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
-        }
-      }
-
-      async function fetchSPData() {
-        showLoader("sp-table-body");
-        try {
-          const result = await apiCall({ action: "getSPData" });
-          if (result.success) {
-            appData.suratPeringatan = result.data;
-            renderSPTable();
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "sp-table-body"
-          ).innerHTML = `<tr><td colspan="8" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
-        }
-      }
-
-      async function fetchLeaveData() {
-        showLoader("leave-table-body");
-        try {
-          const result = await apiCall({ action: "getLeaveData" });
-          if (result.success) {
-            appData.leaveApplication = result.data;
-            renderLeaveTable();
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "leave-table-body"
-          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
-        }
-      }
-
-      async function fetchFamilyData(nrp) {
-        showLoader("family-table-body");
-        try {
-          const result = await apiCall({ action: "getFamilyData" }); // Fetches all family data
-          if (result.success) {
-            const familyMembers = result.data.filter(
-              (member) => member.NRP == nrp
-            );
-            renderFamilyTable(familyMembers);
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "family-table-body"
-          ).innerHTML = `<tr><td colspan="4" class="text-center p-4 text-red-500">Gagal memuat data keluarga: ${error.message}</td></tr>`;
-        }
-      }
-
-      async function fetchRecruitmentData(sheetName) {
-        showLoader("recruitment-table-body");
-        try {
-          const result = await apiCall({
-            action: "getRecruitmentData",
-            sheet: sheetName,
-          });
-          if (result.success) {
-            appData.recruitment[sheetName] = result.data;
-            renderRecruitmentTable(sheetName);
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "recruitment-table-body"
-          ).innerHTML = `<tr><td colspan="7" class="text-center p-4 text-red-500">Gagal memuat data: ${error.message}</td></tr>`;
-        }
-      }
-
-      async function fetchAllRecruitmentData() {
-        const sheetsToFetch = [
-          "Pelamar_Masuk",
-          "Proses_Pelamar",
-          "Kandidat_Terpilih",
-          "Pelamar_Final",
-        ];
-        const promises = sheetsToFetch.map((sheetName) => {
-          if (!appData.recruitment[sheetName]) {
-            return apiCall({ action: "getRecruitmentData", sheet: sheetName })
-              .then((result) => {
-                if (result.success) {
-                  appData.recruitment[sheetName] = result.data;
-                }
-              })
-              .catch((e) => {
-                console.error(`Failed to fetch ${sheetName}:`, e);
-                appData.recruitment[sheetName] = [];
-              });
-          }
-          return Promise.resolve();
-        });
-        await Promise.all(promises);
-      }
-
-      async function fetchActivityLog() {
-        showLoader("activity-log-table-body");
-        try {
-          const result = await apiCall({ action: "getActivityLog" });
-          if (result.success) {
-            appData.activityLog = result.data;
-            renderActivityLogTable();
-          } else throw new Error(result.error);
-        } catch (error) {
-          document.getElementById(
-            "activity-log-table-body"
-          ).innerHTML = `<tr><td colspan="5" class="text-center p-4 text-red-500">Gagal memuat log: ${error.message}</td></tr>`;
-        }
-      }
-
-      // --- RENDERING ---
-      function renderManpowerTable() {
-        const tbody = document.getElementById("manpower-table-body");
-        tbody.innerHTML = appData.manpower
-          .map(
-            (emp) => `
-                <tr class="border-t hover:bg-gray-50 cursor-pointer" onclick="showEmployeeDetails('${
-                  emp.NRP
-                }')">
-                    <td class="p-3">${emp.NRP || ""}</td>
-                    <td class="p-3 font-semibold">${emp.NAME || ""}</td>
-                    <td class="p-3">${emp.DEPARTMENT || ""}</td>
-                    <td class="p-3">${emp.POSITION || ""}</td>
-                    <td class="p-3">${emp.GRADE || ""}</td>
-                    <td class="p-3">${
-                      emp["HIRING DATE"]
-                        ? new Date(emp["HIRING DATE"]).toLocaleDateString(
-                            "id-ID"
-                          )
-                        : ""
-                    }</td>
-                    <td class="p-3 text-center">
-                        <button onclick="event.stopPropagation(); showEmployeeDetails('${
-                          emp.NRP
-                        }')" class="text-blue-600 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="event.stopPropagation(); confirmDelete('manpower', '${
-                          emp.NRP
-                        }')" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`
-          )
-          .join("");
-        lucide.createIcons();
-      }
-
-      function renderSPTable() {
-        const tbody = document.getElementById("sp-table-body");
-        tbody.innerHTML = appData.suratPeringatan
-          .map(
-            (sp) => `
-                <tr class="border-t hover:bg-gray-50">
-                    <td class="p-3">${
-                      sp["WAKTU KEJADIAN"]
-                        ? new Date(sp["TANGGAL KEJADIAN"]).toLocaleDateString(
-                            "id-ID"
-                          ) +
-                          " " +
-                          sp["WAKTU KEJADIAN"]
-                        : ""
-                    }</td>
-                    <td class="p-3">${sp.NRP || ""}</td>
-                    <td class="p-3 font-semibold">${sp.NAME || ""}</td>
-                    <td class="p-3">${sp.POSITION || ""}</td>
-                    <td class="p-3">${sp.SANKSI || ""}</td>
-                    <td class="p-3">${sp.JENIS || ""}</td>
-                    <td class="p-3"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">${
-                      sp.STATUS || ""
-                    }</span></td>
-                    <td class="p-3 text-center">
-                        <button onclick="showSPDetailModal('${
-                          sp["ID DOKUMEN"]
-                        }')" class="text-gray-600 p-1"><i data-lucide="eye" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`
-          )
-          .join("");
-        lucide.createIcons();
-      }
-
-      function renderLeaveTable() {
-        const tbody = document.getElementById("leave-table-body");
-        tbody.innerHTML = appData.leaveApplication
-          .map(
-            (leave) => `
-                <tr class="border-t hover:bg-gray-50">
-                    <td class="p-3">${leave["ID DOKUMEN"] || ""}</td>
-                    <td class="p-3">${leave.NRP || ""}</td>
-                    <td class="p-3 font-semibold">${
-                      leave["NAMA PEKERJA"] || ""
-                    }</td>
-                    <td class="p-3">${
-                      leave["TANGGAL BERANGKAT"]
-                        ? new Date(
-                            leave["TANGGAL BERANGKAT"]
-                          ).toLocaleDateString("id-ID")
-                        : ""
-                    }</td>
-                    <td class="p-3">${
-                      leave["TANGGAL KEMBALI"]
-                        ? new Date(leave["TANGGAL KEMBALI"]).toLocaleDateString(
-                            "id-ID"
-                          )
-                        : ""
-                    }</td>
-                    <td class="p-3"><span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${
-                      leave.STATUS || ""
-                    }</span></td>
-                    <td class="p-3 text-center">
-                        <button onclick="showLeaveDetails('${
-                          leave["ID DOKUMEN"]
-                        }')" class="text-blue-600 p-1"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="confirmDelete('leave', '${
-                          leave["ID DOKUMEN"]
-                        }')" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`
-          )
-          .join("");
-        lucide.createIcons();
-      }
-
-      function renderFamilyTable(familyMembers) {
-        const tbody = document.getElementById("family-table-body");
-        if (familyMembers.length === 0) {
-          tbody.innerHTML = `<tr id="no-family-data"><td colspan="4" class="text-center p-4">Tidak ada data keluarga.</td></tr>`;
-          return;
-        }
-        tbody.innerHTML = familyMembers
-          .map(
-            (m) => `
-                <tr class="border-t" data-family-name="${m["FAMILY NAME"]}">
-                    <td class="p-2"><input type="text" value="${
-                      m["FAMILY NAME"] || ""
-                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
-                    <td class="p-2"><input type="text" value="${
-                      m["FAMILY RELATION CODE"] || ""
-                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
-                    <td class="p-2"><input type="date" value="${
-                      m["BIRTH DATE"]
-                        ? new Date(m["BIRTH DATE"]).toISOString().split("T")[0]
-                        : ""
-                    }" class="w-full bg-gray-100 p-1 rounded border"></td>
-                    <td class="p-2 text-center">
-                        <button onclick="saveFamilyMember(this)" class="text-green-600 p-1"><i data-lucide="save" class="w-4 h-4"></i></button>
-                        <button onclick="deleteFamilyMember(this)" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    </td>
-                </tr>`
-          )
-          .join("");
-        lucide.createIcons();
-      }
-
-      function renderRecruitmentTable(sheetName) {
-        const thead = document.getElementById("recruitment-table-head");
-        const tbody = document.getElementById("recruitment-table-body");
-        const data = appData.recruitment[sheetName] || [];
-        if (data.length === 0) {
-          thead.innerHTML = "";
-          tbody.innerHTML = `<tr><td colspan="1" class="text-center p-4">Tidak ada data di tab ini.</td></tr>`;
-          return;
-        }
-        const headers = Object.keys(data[0]);
-        thead.innerHTML = `<tr>${headers
-          .map(
-            (h) => `<th class="p-3 font-semibold">${h.replace(/_/g, " ")}</th>`
-          )
-          .join("")}</tr>`;
-        tbody.innerHTML = data
-          .map(
-            (row) => `
-                <tr class="border-b">${headers
-                  .map((h) => `<td class="p-3">${row[h] || ""}</td>`)
-                  .join("")}</tr>
-            `
-          )
-          .join("");
-      }
-
-      function renderActivityLogTable() {
-        const tbody = document.getElementById("activity-log-table-body");
-        tbody.innerHTML = appData.activityLog
-          .map(
-            (log) => `
-                <tr class="border-t">
-                    <td class="p-3">${new Date(log.Timestamp).toLocaleString(
-                      "id-ID"
-                    )}</td>
-                    <td class="p-3">${log.User}</td>
-                    <td class="p-3">${log.Action}</td>
-                    <td class="p-3">${log.Target_ID}</td>
-                    <td class="p-3">${log.Description}</td>
-                </tr>
-            `
-          )
-          .join("");
-      }
-
-      // --- CRUD OPERATIONS ---
-      function generateFormFields(containerId, headers, data = {}) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        container.innerHTML = headers
-          .map(
-            (header) => `
-                <div>
-                    <label class="block text-sm font-medium text-gray-500">${header}</label>
-                    <input type="text" id="form-${header.replace(
-                      / /g,
-                      "-"
-                    )}" value="${
-              data[header] || ""
-            }" class="mt-1 block w-full bg-gray-100 border-gray-300 rounded-md shadow-sm p-2">
-                </div>
-            `
-          )
-          .join("");
-      }
-
-      function openAddEmployeeModal() {
-        document.getElementById("employee-modal-title").innerText =
-          "Tambah Karyawan Baru";
-        generateFormFields("employee-form-fields", MANPOWER_HEADERS);
-        document.getElementById("edit-nrp").value = "";
-        openModal("employeeModal");
-        switchDetailTab(new Event("click"), "personal-data");
-      }
-
-      function showEmployeeDetails(nrp) {
-        const employee = appData.manpower.find((emp) => emp.NRP == nrp);
-        if (!employee) return;
-        document.getElementById(
-          "employee-modal-title"
-        ).innerText = `Detail Karyawan: ${employee.NAME}`;
-        document.getElementById("edit-nrp").value = employee.NRP;
-        generateFormFields("employee-form-fields", MANPOWER_HEADERS, employee);
-        openModal("employeeModal");
-        switchDetailTab(new Event("click"), "personal-data");
-      }
-
-      function showSPDetails(id) {
-        const sp = appData.suratPeringatan.find((s) => s["ID DOKUMEN"] == id);
-        if (!sp) return;
-        document.getElementById("sp-modal-title").innerText =
-          "Edit Surat Peringatan";
-        generateFormFields("sp-form-fields", SP_HEADERS, sp);
-        openModal("spModal");
-      }
-
-      async function showSPDetailModal(id) {
-        const sp = appData.suratPeringatan.find((s) => s["ID DOKUMEN"] == id);
-        if (!sp) return;
-
-        document.getElementById("sp-detail-modal-title").innerText =
-          sp["ID DOKUMEN"];
-        const content = document.getElementById("sp-detail-content");
-        content.innerHTML = '<div class="loader mx-auto"></div>';
-        openModal("spDetailModal");
-
-        const detailHtml = SP_HEADERS.map((header) => {
-          if (!["DIBUAT OLEH", "PADA TANGGAL"].includes(header) && sp[header]) {
-            return `<div class="grid grid-cols-3 gap-4"><strong class="col-span-1">${header}</strong><span class="col-span-2">: ${sp[header]}</span></div>`;
-          }
-          return "";
-        }).join("");
-
-        content.innerHTML = detailHtml;
-      }
-
-      function openAddSPModal() {
-        document.getElementById("sp-modal-title").innerText =
-          "Tambah Surat Peringatan";
-        generateFormFields("sp-form-fields", SP_HEADERS);
-        openModal("spModal");
-      }
-
-      function openAddLeaveModal() {
-        document.getElementById("leave-modal-title").innerText =
-          "Tambah Pengajuan Cuti";
-        generateFormFields("leave-form-fields", LEAVE_HEADERS);
-        openModal("leaveModal");
-      }
-
-      function showLeaveDetails(id) {
-        const leave = appData.leaveApplication.find(
-          (l) => l["ID DOKUMEN"] == id
-        );
-        if (!leave) return;
-        document.getElementById("leave-modal-title").innerText =
-          "Edit Pengajuan Cuti";
-        generateFormFields("leave-form-fields", LEAVE_HEADERS, leave);
-        openModal("leaveModal");
-      }
-
-      function openAddApplicantModal() {
-        document.getElementById("applicantForm").reset();
-        document.getElementById("applicant-modal-title").innerText =
-          "Tambah Pelamar Baru";
-        document.getElementById("applicant-id").value = "";
-        openModal("applicantModal");
-      }
-
-      function openProcessApplicantModal() {
-        document.getElementById("processApplicantForm").reset();
-        openModal("processApplicantModal");
-      }
-
-      function confirmDelete(type, id) {
-        openModal("confirmDeleteModal");
-        const btn = document.getElementById("confirm-delete-btn");
-        btn.onclick = async () => {
-          let action;
-          if (type === "manpower") action = "deleteManpower";
-          else if (type === "sp") action = "deleteSP";
-          else if (type === "leave") action = "deleteLeave";
-          else return;
-
-          try {
-            const result = await apiCall({ action, id }, { method: "POST" });
-            showToast("Data berhasil dihapus.");
-            if (type === "manpower") fetchManpowerData();
-            else if (type === "sp") fetchSPData();
-            else if (type === "leave") fetchLeaveData();
-          } catch (error) {
-            showToast(`Gagal menghapus: ${error.message}`, "error");
-          } finally {
-            closeModal("confirmDeleteModal");
-          }
-        };
-      }
-
-      document
-        .getElementById("employeeForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const nrp = document.getElementById("edit-nrp").value;
-          const action = nrp ? "updateManpower" : "addManpower";
-          const data = {};
-          MANPOWER_HEADERS.forEach((header) => {
-            const input = document.getElementById(
-              `form-${header.replace(/ /g, "-")}`
-            );
-            if (input) data[header] = input.value;
-          });
-          if (!nrp) data.NRP = data.NRP || `EMP-${Date.now()}`;
-
-          try {
-            const result = await apiCall(
-              { action, id: nrp },
-              { method: "POST", body: JSON.stringify(data) }
-            );
-            showToast(
-              `Data karyawan berhasil ${nrp ? "diperbarui" : "ditambahkan"}.`
-            );
-            fetchManpowerData();
-          } catch (error) {
-            showToast(`Proses gagal: ${error.message}`, "error");
-          } finally {
-            closeModal("employeeModal");
-          }
-        });
-
-      document
-        .getElementById("spForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const idInput = document.getElementById("form-ID-DOKUMEN");
-          const id = idInput.value;
-          const action =
-            id && appData.suratPeringatan.some((sp) => sp["ID DOKUMEN"] === id)
-              ? "updateSP"
-              : "addSP";
-
-          const data = {};
-          SP_HEADERS.forEach((header) => {
-            const input = document.getElementById(
-              `form-${header.replace(/ /g, "-")}`
-            );
-            if (input) data[header] = input.value;
-          });
-          if (action === "addSP") {
-            data["ID DOKUMEN"] = data["ID DOKUMEN"] || `SP-${Date.now()}`;
-          }
-
-          try {
-            const result = await apiCall(
-              { action, id: data["ID DOKUMEN"] },
-              { method: "POST", body: JSON.stringify(data) }
-            );
-            showToast(
-              `Surat peringatan berhasil ${
-                action === "updateSP" ? "diperbarui" : "ditambahkan"
-              }.`
-            );
-            fetchSPData();
-          } catch (error) {
-            showToast(`Proses gagal: ${error.message}`, "error");
-          } finally {
-            closeModal("spModal");
-          }
-        });
-
-      document
-        .getElementById("leaveForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const idInput = document.getElementById("form-ID-DOKUMEN");
-          const id = idInput.value;
-          const action =
-            id && appData.leaveApplication.some((l) => l["ID DOKUMEN"] === id)
-              ? "updateLeave"
-              : "addLeave";
-
-          const data = {};
-          LEAVE_HEADERS.forEach((header) => {
-            const input = document.getElementById(
-              `form-${header.replace(/ /g, "-")}`
-            );
-            if (input) data[header] = input.value;
-          });
-          if (action === "addLeave") {
-            data["ID DOKUMEN"] = data["ID DOKUMEN"] || `LEAVE-${Date.now()}`;
-          }
-
-          try {
-            const result = await apiCall(
-              { action, id: data["ID DOKUMEN"] },
-              { method: "POST", body: JSON.stringify(data) }
-            );
-            showToast(
-              `Pengajuan cuti berhasil ${
-                action === "updateLeave" ? "diperbarui" : "ditambahkan"
-              }.`
-            );
-            fetchLeaveData();
-          } catch (error) {
-            showToast(`Proses gagal: ${error.message}`, "error");
-          } finally {
-            closeModal("leaveModal");
-          }
-        });
-
-      document
-        .getElementById("applicantForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const id = document.getElementById("applicant-id").value;
-          const action = "addApplicant";
-          const data = {
-            ID_Pelamar: id || `APP-${Date.now()}`,
-            Nama_Lengkap: document.getElementById("applicant-name").value,
-            Posisi_Dilamar: document.getElementById("applicant-position").value,
-            Email: document.getElementById("applicant-email").value,
-            No_Telepon: document.getElementById("applicant-phone").value,
-            Tanggal_Pengajuan: new Date().toLocaleDateString("en-CA"),
-          };
-          try {
-            const result = await apiCall(
-              { action, sheet: "Pelamar_Masuk" },
-              { method: "POST", body: JSON.stringify(data) }
-            );
-            showToast(`Pelamar baru berhasil ditambahkan.`);
-            fetchRecruitmentData("Pelamar_Masuk");
-          } catch (error) {
-            showToast(`Proses gagal: ${error.message}`, "error");
-          } finally {
-            closeModal("applicantModal");
-          }
-        });
-
-      document
-        .getElementById("processApplicantForm")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const identifier = document.getElementById(
-            "applicant-identifier"
-          ).value;
-          if (!identifier) {
-            showToast("NIK atau No. Telepon harus diisi.", "error");
-            return;
-          }
-
-          // Ensure Pelamar_Masuk data is loaded
-          if (
-            !appData.recruitment["Pelamar_Masuk"] ||
-            appData.recruitment["Pelamar_Masuk"].length === 0
-          ) {
-            await fetchRecruitmentData("Pelamar_Masuk");
-          }
-
-          const applicant = appData.recruitment["Pelamar_Masuk"].find(
-            (p) => p.NIK == identifier || p.No_Telepon == identifier
-          );
-
-          if (!applicant) {
-            showToast(
-              "Pelamar dengan NIK atau No. Telepon tersebut tidak ditemukan di data Pelamar Masuk.",
-              "error"
-            );
-            return;
-          }
-
-          const applicantId = applicant.ID_Pelamar;
-          const data = {
-            targetSheet: "Kandidat_Terpilih",
-            reason: "Diproses via Web App",
-          };
-
-          try {
-            const result = await apiCall(
-              { action: "processApplicant", id: applicantId },
-              { method: "POST", body: JSON.stringify(data) }
-            );
-            showToast(
-              `Pelamar ${applicant.Nama_Lengkap} berhasil diproses menjadi kandidat terpilih.`
-            );
-            fetchRecruitmentData("Pelamar_Masuk");
-            fetchRecruitmentData("Kandidat_Terpilih");
-          } catch (error) {
-            showToast(`Proses gagal: ${error.message}`, "error");
-          } finally {
-            closeModal("processApplicantModal");
-          }
-        });
-
-      // --- FAMILY TAB CRUD ---
-      function addFamilyRow() {
-        const tbody = document.getElementById("family-table-body");
-        document.getElementById("no-family-data")?.remove();
-        const newRow = document.createElement("tr");
-        newRow.className = "border-t";
-        newRow.setAttribute("data-is-new", "true");
-        newRow.innerHTML = `
-                <td class="p-2"><input type="text" placeholder="Nama" class="w-full bg-gray-100 p-1 rounded border"></td>
-                <td class="p-2"><input type="text" placeholder="Hubungan" class="w-full bg-gray-100 p-1 rounded border"></td>
-                <td class="p-2"><input type="date" class="w-full bg-gray-100 p-1 rounded border"></td>
-                <td class="p-2 text-center">
-                    <button onclick="saveFamilyMember(this)" class="text-green-600 p-1"><i data-lucide="save" class="w-4 h-4"></i></button>
-                    <button onclick="this.closest('tr').remove()" class="text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </td>
-            `;
-        tbody.appendChild(newRow);
-        lucide.createIcons();
-      }
-
-      async function saveFamilyMember(button) {
-        const row = button.closest("tr");
-        const inputs = row.querySelectorAll("input");
-        const isNew = row.getAttribute("data-is-new") === "true";
-        const originalFamilyName = isNew
-          ? null
-          : row.getAttribute("data-family-name");
-
-        const data = {
-          NRP: document.getElementById("edit-nrp").value,
-          "FAMILY NAME": inputs[0].value,
-          "FAMILY RELATION CODE": inputs[1].value,
-          "BIRTH DATE": new Date(inputs[2].value).toLocaleDateString("en-CA"),
-        };
-
-        if (!data["FAMILY NAME"]) {
-          showToast("Nama keluarga tidak boleh kosong.", "error");
-          return;
-        }
-
-        const action = isNew ? "addFamily" : "updateFamily";
-        const id = isNew ? null : originalFamilyName;
-
-        try {
-          const result = await apiCall(
-            { action, id },
-            { method: "POST", body: JSON.stringify(data) }
-          );
-          showToast(
-            `Data keluarga berhasil ${isNew ? "ditambahkan" : "diperbarui"}.`
-          );
-          fetchFamilyData(data.NRP);
-        } catch (error) {
-          showToast(`Proses gagal: ${error.message}`, "error");
-        }
-      }
-
-      async function deleteFamilyMember(button) {
-        if (!confirm("Yakin ingin menghapus anggota keluarga ini?")) return;
-
-        const row = button.closest("tr");
-        const familyName = row.getAttribute("data-family-name");
-        const nrp = document.getElementById("edit-nrp").value;
-
-        if (!familyName) {
-          // For new rows that haven't been saved
-          row.remove();
-          return;
-        }
-
-        try {
-          const result = await apiCall(
-            { action: "deleteFamily", id: familyName },
-            { method: "POST" }
-          );
-          showToast("Anggota keluarga berhasil dihapus.");
-          fetchFamilyData(nrp);
-        } catch (error) {
-          showToast(`Gagal menghapus: ${error.message}`, "error");
-        }
-      }
-
-      // --- DASHBOARD CHARTS ---
-      function renderPersonalDashboardCharts() {
-        if (appData.manpower.length === 0) {
-          document.getElementById("dashboard-personal-content").innerHTML =
-            '<p class="col-span-full text-center">Memuat data untuk grafik...</p>';
-          return;
-        }
-
-        const processDataForChart = (key) => {
-          return appData.manpower.reduce((acc, curr) => {
-            const value = curr[key] || "Tidak Diketahui";
-            acc[value] = (acc[value] || 0) + 1;
-            return acc;
-          }, {});
-        };
-
-        const chartConfigs = [
-          { id: "religionChart", type: "pie", key: "RELIGION", title: "Agama" },
-          {
-            id: "maritalChart",
-            type: "doughnut",
-            key: "MARITAL STATUS",
-            title: "Status Pernikahan",
-          },
-          {
-            id: "educationChart",
-            type: "pie",
-            key: "EDUCATION",
-            title: "Pendidikan",
-          },
-          {
-            id: "departmentChart",
-            type: "bar",
-            key: "DEPARTMENT",
-            title: "Departemen",
-          },
-          {
-            id: "pohChart",
-            type: "doughnut",
-            key: "STATUS POH",
-            title: "Status POH",
-          },
-          { id: "genderChart", type: "pie", key: "GENDER", title: "Gender" },
-        ];
-
-        chartConfigs.forEach((config) => {
-          const chartData = processDataForChart(config.key);
-          const labels = Object.keys(chartData);
-          const data = Object.values(chartData);
-          const canvas = document.getElementById(config.id);
-          if (canvas) {
-            if (charts[config.id]) charts[config.id].destroy();
-            charts[config.id] = new Chart(canvas, {
-              type: config.type,
-              data: {
-                labels: labels,
-                datasets: [
-                  {
-                    label: config.title,
-                    data: data,
-                    borderWidth: 1,
-                  },
-                ],
-              },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: "bottom" } },
-              },
-            });
-          }
-        });
-      }
-
-      function renderRecruitmentDashboardCharts() {
-        const labels = [
-          "Pelamar Masuk",
-          "Proses Pelamar",
-          "Kandidat Terpilih",
-          "Pelamar Final",
-        ];
-        const data = labels.map(
-          (label) => appData.recruitment[label.replace(/ /g, "_")]?.length || 0
-        );
-        const canvas = document.getElementById("recruitmentFunnelChart");
-        if (canvas) {
-          if (charts.recruitmentFunnel) charts.recruitmentFunnel.destroy();
-          charts.recruitmentFunnel = new Chart(canvas, {
-            type: "bar",
-            data: {
-              labels: labels,
-              datasets: [
-                {
-                  label: "Jumlah Kandidat per Tahap",
-                  data: data,
-                  backgroundColor: ["#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8"],
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              indexAxis: "y",
-              plugins: { legend: { display: false } },
-            },
-          });
-        }
-      }
-
-      function renderSPDashboardCharts() {
-        const spBySanksiData = appData.suratPeringatan.reduce((acc, curr) => {
-          const sanksi = curr["SANKSI"] || "Lainnya";
-          acc[sanksi] = (acc[sanksi] || 0) + 1;
-          return acc;
-        }, {});
-        const spByDeptData = appData.suratPeringatan.reduce((acc, curr) => {
-          const dept = curr["DEPARTMENT"] || "Tidak Diketahui";
-          acc[dept] = (acc[dept] || 0) + 1;
-          return acc;
-        }, {});
-
-        const sanksiCanvas = document.getElementById("spBySanksiChart");
-        if (sanksiCanvas) {
-          if (charts.spBySanksi) charts.spBySanksi.destroy();
-          charts.spBySanksi = new Chart(sanksiCanvas, {
-            type: "doughnut",
-            data: {
-              labels: Object.keys(spBySanksiData),
-              datasets: [{ data: Object.values(spBySanksiData) }],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { position: "right" } },
-            },
-          });
-        }
-
-        const deptCanvas = document.getElementById("spByDeptChart");
-        if (deptCanvas) {
-          if (charts.spByDept) charts.spByDept.destroy();
-          charts.spByDept = new Chart(deptCanvas, {
-            type: "bar",
-            data: {
-              labels: Object.keys(spByDeptData),
-              datasets: [
-                { label: "Jumlah SP", data: Object.values(spByDeptData) },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
-            },
-          });
-        }
-      }
-
-      // --- INITIAL LOAD ---
-      document.addEventListener("DOMContentLoaded", () => {
-        const sidebar = document.getElementById("sidebar");
-        const body = document.body;
-        sidebar.addEventListener("mouseenter", () =>
-          body.classList.add("sidebar-expanded")
-        );
-        sidebar.addEventListener("mouseleave", () =>
-          body.classList.remove("sidebar-expanded")
-        );
-        showPage("dashboard");
-        lucide.createIcons();
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
